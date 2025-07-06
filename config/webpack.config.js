@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	context: path.resolve(__dirname, '..'), // Set context to root
@@ -10,12 +11,11 @@ module.exports = {
 		clean: true, // Clean dist folder on build
 	},
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-	devtool: 'inline-source-map', // Better debugging
+	devtool: 'inline-source-map',
 	devServer: {
 		static: '../dist',
-		hot: true, // Enable HMR
-		open: true, // Open browser on start
-		// watchFiles: ['index.html'], // Watch for HTML changes
+		hot: true,
+		open: true,
 		watchFiles: [path.resolve(__dirname, '../index.html')],
 	},
 	module: {
@@ -45,9 +45,14 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			// template: './index.html',
 			template: path.resolve(__dirname, '../index.html'),
 			filename: 'index.html',
+		}),
+		new CopyWebpackPlugin({
+			patterns: [
+				{ from: 'src/assets/favicon', to: 'assets/favicon' },
+				// { from: 'src/assets/images', to: 'assets/images' },
+			],
 		}),
 	],
 };
