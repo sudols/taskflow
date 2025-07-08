@@ -17,7 +17,103 @@
 			href="./assets/favicon/apple-touch-icon.png"
 		/>
 		<link rel="manifest" href="./assets/favicon/site.webmanifest" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+		/>
 		<title>TaskFlow</title>
 	</head>
-	<body class="bg-black text-white"></body>
+	<body class="bg-main-bg text-body">
+		<main
+			class="h-screen grid grid-cols-2 grid-rows-[60px_50px_1fr] mt-5 ml-5 mr-5"
+		>
+			<div class="col-span-2">
+				<form action="#">
+					<div class="relative">
+						<input
+							type="search"
+							name="card-search"
+							id="card-search"
+							class="appearance-none outline-none rounded-md bg-header-search-bg focus:text-active-menu text-inactive-menu pl-8 pt-2 pb-2 pr-20 text-sm border-gray-600 border-1"
+							placeholder="Search tasks"
+						/>
+						<div
+							class="absolute left-2 top-0 flex items-center justify-center h-full text-base"
+						>
+							<i class="ti ti-search text-grey-200"></i>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="row-start-2 flex items-center">
+				<!-- my tasks heading -->
+				<div>
+					<p class="text-heading text-2xl font-bold">My Tasks</p>
+				</div>
+			</div>
+			<div class="row-start-2 justify-self-end flex gap-3 items-center">
+				<button
+					type="button"
+					class="hover:cursor-pointer bg-btn-bg text-btn-text pt-1.5 pb-1.5 pr-3 pl-3 rounded-md hover:bg-btn-focus font-bold text-sm"
+				>
+					New Task
+				</button>
+				<button
+					type="button"
+					class="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm"
+				>
+					Sort & Filter
+				</button>
+				<!-- buttons -->
+			</div>
+			<div class="col-span-2">
+				<!-- task card -->
+				<div
+					class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg mb-4 mt-4"
+				>
+					<div>
+						<label
+							class="flex items-center justify-center cursor-pointer relative"
+						>
+							<input
+								checked
+								type="checkbox"
+								class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition"
+								id="check-custom-icon"
+							/>
+							<span
+								class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition"
+							>
+								<i class="ti ti-check"></i>
+							</span>
+						</label>
+					</div>
+					<div>
+						<div>
+							<div class="flex items-center justify-between">
+								<p class="text-heading text-lg font-semibold">Task Title</p>
+								<button
+									type="button"
+									class="cursor-pointer hover:bg-generic-btn-hover hover:rounded"
+								>
+									<i class="ti ti-dots-vertical"></i>
+								</button>
+							</div>
+							<p class="text-body text-sm line-clamp-2">
+								Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+								Mollitia molestias at reiciendis numquam, omnis iste, quia
+								nesciunt aut enim dignissimos eaque laudantium qui autem
+								doloremque perferendis rem expedita a dicta.
+							</p>
+						</div>
+						<div>
+							<p class="text-body text-xs">
+								Due: <span class="text-red-500">Tomorrow</span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
 </html>
