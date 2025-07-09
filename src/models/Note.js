@@ -40,8 +40,6 @@ export default class Note {
 		}
 
 		this.modified = new Date().toISOString();
-		// localStorage.setItem(this.id, JSON.stringify(this));
-		// console.log('Note updated:', this);
 	}
 
 	toggleCompleted() {
@@ -50,7 +48,7 @@ export default class Note {
 		localStorage.setItem(this.id, JSON.stringify(this));
 		console.log('Note complete toggled:', this);
 	}
-	// noteInstance is an instance of Note class with existing data
+
 	static createNote(noteInstance, categoryName = 'default') {
 		if (noteInstance instanceof Note) {
 			let noteObj = {
@@ -66,19 +64,11 @@ export default class Note {
 			localStorage.setItem(noteInstance.id, JSON.stringify(noteObj));
 		}
 		if (Category.checkNoteInCategory(categoryName, noteInstance.id) === false) {
-			// if (Category.categoryExists(categoryName)) {
 			Category.addNoteToCategory(categoryName, noteInstance.id);
 			console.log(
 				`Note "${noteInstance.title}" created and added to category "${categoryName}".`
 			);
-			// }
 		}
-		// else {
-		// 	Category.addNoteToCategory(categoryName, noteInstance.id);
-		// 	console.log(
-		// 		`Note "${noteInstance.title}" created and added to newly created category "${categoryName}".`
-		// 	);
-		// }
 		return noteInstance;
 	}
 
@@ -87,13 +77,6 @@ export default class Note {
 		if (noteData) {
 			localStorage.removeItem(noteID);
 			console.log(`Note with ID "${noteID}" deleted.`);
-
-			// // Also remove the note from all categories
-			// const allCategories = Category.getAllCategories();
-			// allCategories.forEach((categoryName) => {
-			// 	const category = new Category(categoryName);
-			// 	category.removeNoteFromCategory(noteID);
-			// });
 		} else {
 			console.error(`Note with ID "${noteID}" not found.`);
 		}

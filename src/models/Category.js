@@ -3,34 +3,26 @@ export default class Category {
 		this.categoryName = categoryName;
 	}
 
-	// Helper
 	static getStoredCategories() {
 		return JSON.parse(localStorage.getItem('categories_index')) || {};
 	}
-	// Helper
 	static saveCategories(categories) {
 		localStorage.setItem('categories_index', JSON.stringify(categories));
 	}
 
 	static getCategoryNotes(categoryName) {
 		return Category.getStoredCategories()[categoryName] || ['not found'];
-		// return this.categoIndex[this.currentCategory] || ['not found'];
 	}
 	static removeNoteFromCategory(noteID, categoryName) {
 		let currentCategoryNotes = Category.getCategoryNotes(categoryName);
-		// console.log('current category notes', currentCategoryNotes);
 		if (currentCategoryNotes.includes(noteID)) {
-			// if (currentCategoryNotes[categoryName]) {
 			currentCategoryNotes = currentCategoryNotes.filter((id) => id !== noteID);
 
 			const categoryIndex = Category.getStoredCategories() || {};
 			categoryIndex[categoryName] = currentCategoryNotes;
-			// this.categoryIndex[this.currentCategory] = currentCategoryNotes;
 			console.log(
 				'Removed. \n Updated category notes:',
 				categoryIndex[categoryName]
-				// Category.getStoredCategories()[this.categoryName]
-				// this.categoryIndex[this.currentCategor]
 			);
 			Category.saveCategories(categoryIndex);
 		}
@@ -72,11 +64,6 @@ export default class Category {
 				storedCategories[categoryName].push(noteID);
 				Category.saveCategories(storedCategories);
 			}
-			// else {
-			// 	console.error(
-			// 		`Note "${noteID}" already exists in category "${categoryName}".`
-			// 	);
-			// }
 		} else {
 			console.warn(
 				`Category "${categoryName}" does not exist. Creating it now.`

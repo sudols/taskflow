@@ -123,7 +123,7 @@ export default class TaskCardRenderer {
 					dateInput.style.visibility = 'hidden';
 					dueCustomDateButton.insertAdjacentElement('afterend', dateInput);
 				}
-				// calendar position
+				// calculates calendar position based on calendar's button position
 				dateInput.style.top = `${buttonRect.bottom + 5}px`;
 				dateInput.style.left = `${buttonRect.left - 8}px`;
 
@@ -144,11 +144,10 @@ export default class TaskCardRenderer {
 		console.log(cardElement);
 		const titleInput = cardElement.querySelector('#newTaskTitle');
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
-		// console.log(saveData);
+
 		if (cardElement) {
 			cardElement.addEventListener('input', (event) => {
 				if (event.target === titleInput) {
-					// noteInstance.title = titleInput.value;
 					noteInstance.updateNote({
 						title: titleInput.value,
 					});
@@ -182,7 +181,6 @@ export default class TaskCardRenderer {
 				}
 			};
 
-			// Add click listener to document
 			document.addEventListener('click', handleClickOutside);
 		}
 	}
@@ -190,7 +188,6 @@ export default class TaskCardRenderer {
 	static SaveCardData(cardElement, NoteInstance) {
 		const titleInput = cardElement.querySelector('#newTaskTitle');
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
-		// const saveCardData = () => {
 		if (titleInput.value || descriptionInput.value) {
 			NoteInstance.updateNote({
 				title: titleInput.value,
@@ -199,9 +196,6 @@ export default class TaskCardRenderer {
 			Note.createNote(NoteInstance);
 			console.log('Card data saved:', NoteInstance);
 		}
-		// };
-		// console.log(typeof saveCardData);
-		// return saveCardData;
 	}
 
 	static renderCards(noteIds, containerId) {
