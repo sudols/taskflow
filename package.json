@@ -19,6 +19,7 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tabler/icons-webfont": "^3.34.0"
+		"@tabler/icons-webfont": "^3.34.0",
+		"flatpickr": "^4.6.13"
 	}
 }

@@ -21,6 +21,12 @@
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
 		/>
+		<!-- Flatpickr CSS -->
+		<!-- <link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+		/> -->
+		<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script> -->
 		<title>TaskFlow</title>
 	</head>
 	<body class="bg-main-bg text-body">
@@ -54,66 +60,102 @@
 			<div class="row-start-2 justify-self-end flex gap-3 items-center">
 				<button
 					type="button"
-					class="hover:cursor-pointer bg-btn-bg text-btn-text pt-1.5 pb-1.5 pr-3 pl-3 rounded-md hover:bg-btn-focus font-bold text-sm"
+					class="hover:cursor-pointer bg-btn-bg text-btn-text pt-1.5 pb-1.5 pr-3 pl-3 rounded-md hover:bg-btn-focus font-bold text-sm newTaskButton"
 				>
 					New Task
 				</button>
 				<button
 					type="button"
-					class="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm"
+					class="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm sortTaskButton"
 				>
 					Sort & Filter
 				</button>
 				<!-- buttons -->
 			</div>
-			<div class="col-span-2">
+			<div class="col-span-2 cardDisplayContainer flex flex-col gap-2">
 				<!-- task card -->
-				<div
-					class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg mb-4 mt-4"
-				>
-					<div>
-						<label
-							class="flex items-center justify-center cursor-pointer relative"
-						>
-							<input
-								checked
-								type="checkbox"
-								class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition"
-								id="check-custom-icon"
-							/>
-							<span
-								class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition"
-							>
-								<i class="ti ti-check"></i>
-							</span>
-						</label>
-					</div>
-					<div>
-						<div>
-							<div class="flex items-center justify-between">
-								<p class="text-heading text-lg font-semibold">Task Title</p>
-								<button
-									type="button"
-									class="cursor-pointer hover:bg-generic-btn-hover hover:rounded"
-								>
-									<i class="ti ti-dots-vertical"></i>
-								</button>
-							</div>
-							<p class="text-body text-sm line-clamp-2">
-								Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-								Mollitia molestias at reiciendis numquam, omnis iste, quia
-								nesciunt aut enim dignissimos eaque laudantium qui autem
-								doloremque perferendis rem expedita a dicta.
-							</p>
-						</div>
-						<div>
-							<p class="text-body text-xs">
-								Due: <span class="text-red-500">Tomorrow</span>
-							</p>
-						</div>
-					</div>
-				</div>
 			</div>
 		</main>
+
+		<!-- Flatpickr JavaScript -->
+
+		<!-- <script>
+			// Initialize datetime picker
+			document.addEventListener('DOMContentLoaded', function () {
+				// Function to format date for display
+				function formatDateDisplay(date) {
+					if (!date) return 'No due date';
+
+					const today = new Date();
+					const tomorrow = new Date(today);
+					tomorrow.setDate(tomorrow.getDate() + 1);
+
+					const taskDate = new Date(date);
+
+					if (taskDate.toDateString() === today.toDateString()) {
+						return 'Today';
+					} else if (taskDate.toDateString() === tomorrow.toDateString()) {
+						return 'Tomorrow';
+					} else {
+						return (
+							taskDate.toLocaleDateString() +
+							' ' +
+							taskDate.toLocaleTimeString([], {
+								hour: '2-digit',
+								minute: '2-digit',
+							})
+						);
+					}
+				}
+
+				// Event delegation for due date triggers
+				document.addEventListener('click', function (e) {
+					if (e.target.matches('.due-date-trigger')) {
+						const noteId = e.target.dataset.noteId;
+						const currentDateText = e.target.textContent.trim();
+
+						// Convert display text back to date if needed
+						let currentDate = new Date();
+						if (currentDateText === 'Tomorrow') {
+							currentDate.setDate(currentDate.getDate() + 1);
+						}
+
+						// Create flatpickr instance
+						const fp = flatpickr(e.target, {
+							enableTime: true,
+							dateFormat: 'Y-m-d H:i',
+							defaultDate: currentDate,
+							time_24hr: false,
+							minuteIncrement: 15,
+							onChange: function (selectedDates, dateStr, instance) {
+								if (selectedDates.length > 0) {
+									const formattedDisplay = formatDateDisplay(selectedDates[0]);
+
+									// Update all triggers for this note
+									document
+										.querySelectorAll(`[data-note-id="${noteId}"]`)
+										.forEach((trigger) => {
+											if (trigger.tagName === 'SPAN') {
+												trigger.textContent = formattedDisplay;
+											}
+										});
+
+									// Here you would update your Note object
+									console.log(`Note ${noteId} due date updated to:`, dateStr);
+									// Example: Note.getNoteData(noteId).updateNote({dueDate: dateStr});
+								}
+							},
+							onClose: function (selectedDates, dateStr, instance) {
+								// Clean up the flatpickr instance
+								instance.destroy();
+							},
+						});
+
+						// Open the picker
+						fp.open();
+					}
+				});
+			});
+		</script> -->
 	</body>
 </html>
