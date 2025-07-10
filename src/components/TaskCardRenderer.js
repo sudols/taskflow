@@ -44,9 +44,9 @@ export default class TaskCardRenderer {
 					<div>
 						<p class="text-body text-xs flex items-center gap-2">
 							<span>Due: </span>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 dueToday" type="button">Today</button>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 dueTomorrow" type="button">Tomorrow</button>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 dueCustomDate" type="button"><i class="ti ti-calendar-event"></i></button>
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">Today</button>
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueTomorrow transition" type="button">Tomorrow</button>
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button"><i class="ti ti-calendar-event"></i></button>
 						</p>
 					</div>
 				</div>
@@ -84,35 +84,171 @@ export default class TaskCardRenderer {
 		const dueTodayButton = cardElement.querySelector('.dueToday');
 		const dueTomorrowButton = cardElement.querySelector('.dueTomorrow');
 
+		const allDueButtons = [
+			dueTodayButton,
+			dueTomorrowButton,
+			dueCustomDateButton,
+		];
+
+		// Helper function to clear all selected states
+		const clearAllSelectedStates = () => {
+			allDueButtons.forEach((btn) => {
+				if (btn) {
+					btn.classList.remove('bg-generic-btn-focus', 'border-gray-500');
+					btn.classList.add('border-transparent');
+				}
+				if (
+					btn === dueCustomDateButton &&
+					btn.getElementsByTagName('i').length !== 1
+				) {
+					const child = document.createElement('i');
+					child.classList.add('ti', 'ti-calendar-event');
+					btn.innerHTML = '';
+					btn.appendChild(child);
+				}
+			});
+		};
+
+		const addToggleButtonAndUpdateInstance = (button, formattedDate) => {
+			button.classList.remove('border-transparent');
+			button.classList.add('bg-generic-btn-focus', 'border-gray-500');
+
+			noteInstance.updateNote({
+				dueDate: formattedDate,
+			});
+		};
+
+		const toggleRemoveButton = (button) => {
+			// future implementation to toggle remove button
+			// change to made remove focus when clicking only on X remove icon
+			// else, openup calendar, similar to google tasks
+			if (button.querySelector('.ti-x')) {
+				button.querySelector('.ti-x').remove();
+				return;
+			}
+			button.classList.add('flex', 'text-center', 'gap-1', 'items-center');
+			const icon = document.createElement('i');
+			icon.className = 'ti ti-x cursor-pointer text-white';
+			button.appendChild(icon);
+			// icon.addEventListener('click', (event) => {
+			// 	event.preventDefault();
+			// 	event.stopPropagation();
+			// 	clearAllSelectedStates();
+			// 	// button.classList.remove('bg-generic-btn-focus', 'border-gray-500');
+			// 	// button.classList.add('border-transparent');
+			// 	noteInstance.updateNote({
+			// 		dueDate: '',
+			// 	});
+			// });
+		};
+
 		if (dueTodayButton) {
 			dueTodayButton.addEventListener('click', (event) => {
 				event.preventDefault();
 				event.stopPropagation();
 				const today = new Date();
 				const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-				noteInstance.updateNote({
-					dueDate: formattedDate,
-				});
+
+				if (dueTodayButton.classList.contains('bg-generic-btn-focus')) {
+					clearAllSelectedStates();
+					noteInstance.updateNote({
+						dueDate: '',
+					});
+					return;
+				}
+				clearAllSelectedStates();
+				addToggleButtonAndUpdateInstance(dueTodayButton, formattedDate);
 			});
 		}
 		if (dueTomorrowButton) {
 			dueTomorrowButton.addEventListener('click', (event) => {
 				event.preventDefault();
 				event.stopPropagation();
+				if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
+					clearAllSelectedStates();
+					noteInstance.updateNote({
+						dueDate: '',
+					});
+					return;
+				}
+
 				const tomorrow = new Date();
 				tomorrow.setDate(tomorrow.getDate() + 1);
 				const formattedDate = tomorrow.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-				noteInstance.updateNote({
-					dueDate: formattedDate,
-				});
+
+				clearAllSelectedStates();
+				addToggleButtonAndUpdateInstance(dueTomorrowButton, formattedDate);
 			});
 		}
 
+		// if (dueCustomDateButton) {
+		// 	dueCustomDateButton.addEventListener('click', (event) => {
+		// 		event.preventDefault();
+		// 		event.stopPropagation();
+		// 		event.stopImmediatePropagation();
+		// 		// if (dueCustomDateButton.classList.contains('bg-generic-btn-focus')) {
+		// 		// 	dueCustomDateButton.innerHTML =
+		// 		// 		'<i class="ti ti-calendar-event"></i>';
+		// 		// 	clearAllSelectedStates();
+		// 		// 	noteInstance.updateNote({
+		// 		// 		dueDate: '',
+		// 		// 	});
+		// 		// 	return;
+		// 		// }
+
+		// 		const buttonRect = dueCustomDateButton.getBoundingClientRect();
+		// 		let dateInput = cardElement.querySelector('.hidden-date-input');
+		// 		if (!dateInput) {
+		// 			dateInput = document.createElement('input');
+		// 			dateInput.type = 'text';
+		// 			dateInput.className = 'hidden-date-input sr-only';
+		// 			dateInput.style.position = 'absolute';
+		// 			dateInput.style.visibility = 'hidden';
+		// 			dueCustomDateButton.insertAdjacentElement('afterend', dateInput);
+		// 		}
+		// 		// calculates calendar position based on calendar's button position
+		// 		dateInput.style.top = `${buttonRect.bottom + 5}px`;
+		// 		dateInput.style.left = `${buttonRect.left - 8}px`;
+		// 		// check if current event is active or in focus
+		// 		clearAllSelectedStates();
+		// 		dueCustomDateButton.classList.remove('border-transparent');
+		// 		dueCustomDateButton.classList.add(
+		// 			'bg-generic-btn-focus',
+		// 			'border-gray-500'
+		// 		);
+		// 		if (document.activeElement === dateInput) {
+		// 		}
+		// 		// addToggleButtonAndUpdateInstance(dueCustomDateButton, formattedDate);
+
+		// 		const fp = flatpickr(dateInput, {
+		// 			dateFormat: 'Y-m-d',
+		// 			onChange: (selectedDates, dateStr) => {
+		// 				noteInstance.updateNote({
+		// 					dueDate: dateStr,
+		// 				});
+		// 				dueCustomDateButton.textContent = dateStr;
+		// 			},
+		// 		});
+		// 		fp.open();
+		// 	});
+		// }
 		if (dueCustomDateButton) {
 			dueCustomDateButton.addEventListener('click', (event) => {
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
+
+				// Check if the custom date button is already selected
+				if (!dueCustomDateButton.classList.contains('bg-generic-btn-focus')) {
+					clearAllSelectedStates();
+					dueCustomDateButton.classList.remove('border-transparent');
+					dueCustomDateButton.classList.add(
+						'bg-generic-btn-focus',
+						'border-gray-500'
+					);
+				}
+
+				// Only execute this styling code if the button is NOT already selected
 				const buttonRect = dueCustomDateButton.getBoundingClientRect();
 				let dateInput = cardElement.querySelector('.hidden-date-input');
 				if (!dateInput) {
@@ -123,9 +259,10 @@ export default class TaskCardRenderer {
 					dateInput.style.visibility = 'hidden';
 					dueCustomDateButton.insertAdjacentElement('afterend', dateInput);
 				}
+
 				// calculates calendar position based on calendar's button position
-				dateInput.style.top = `${buttonRect.bottom + 5}px`;
-				dateInput.style.left = `${buttonRect.left - 8}px`;
+				dateInput.style.top = `${buttonRect.bottom + 24}px`;
+				dateInput.style.left = `${buttonRect.left - 7}px`;
 
 				const fp = flatpickr(dateInput, {
 					dateFormat: 'Y-m-d',
@@ -133,6 +270,7 @@ export default class TaskCardRenderer {
 						noteInstance.updateNote({
 							dueDate: dateStr,
 						});
+						dueCustomDateButton.textContent = dateStr;
 					},
 				});
 				fp.open();
@@ -141,7 +279,6 @@ export default class TaskCardRenderer {
 	}
 
 	static attachInputListeners(cardElement, noteInstance) {
-		console.log(cardElement);
 		const titleInput = cardElement.querySelector('#newTaskTitle');
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
 
@@ -175,8 +312,10 @@ export default class TaskCardRenderer {
 					if (!textInput.value.trim() && !descriptionInput.value.trim()) {
 						cardElement.remove();
 						document.removeEventListener('click', handleClickOutside);
-						Note.deleteNote(noteInstance.id);
-						Category.removeNoteFromCategory(noteInstance.id, 'default');
+						if (Note.getNoteData(noteInstance.id)) {
+							Note.deleteNote(noteInstance.id);
+							Category.removeNoteFromCategory(noteInstance.id, 'default');
+						}
 					}
 				}
 			};
@@ -194,7 +333,6 @@ export default class TaskCardRenderer {
 				description: descriptionInput.value,
 			});
 			Note.createNote(NoteInstance);
-			console.log('Card data saved:', NoteInstance);
 		}
 	}
 

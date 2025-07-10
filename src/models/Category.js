@@ -20,10 +20,7 @@ export default class Category {
 
 			const categoryIndex = Category.getStoredCategories() || {};
 			categoryIndex[categoryName] = currentCategoryNotes;
-			console.log(
-				'Removed. \n Updated category notes:',
-				categoryIndex[categoryName]
-			);
+
 			Category.saveCategories(categoryIndex);
 		}
 	}

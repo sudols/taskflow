@@ -86,10 +86,11 @@ export default class Note {
 		const noteData = localStorage.getItem(noteID);
 		if (noteData) {
 			return new Note(JSON.parse(noteData));
-		} else {
-			console.error(`Note with ID "${noteID}" not found.`);
-			return null;
 		}
+		// } else {
+		// console.error(`Note with ID "${noteID}" not found.`);
+		return null;
+		// }
 	}
 
 	// static getAllNotes() {

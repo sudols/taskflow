@@ -23,6 +23,7 @@
 	--color-sort-btn-bg: #374151; /* rgb(55, 65, 81) */
 	--color-generic-btn-hover: #374151; /* rgb(79, 70, 229) */
 	--color-generic-btn-focus: #364153; /* rgb(79, 70, 229) */
+	--color-generic-btn-focus-border: #364153; /* rgb(79, 70, 229) */
 
 	/* Checkbox */
 	--color-checkbox-border: #4b5563; /* rgb(75, 85, 99) */
