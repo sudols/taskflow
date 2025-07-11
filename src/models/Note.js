@@ -65,9 +65,6 @@ export default class Note {
 		}
 		if (Category.checkNoteInCategory(categoryName, noteInstance.id) === false) {
 			Category.addNoteToCategory(categoryName, noteInstance.id);
-			console.log(
-				`Note "${noteInstance.title}" created and added to category "${categoryName}".`
-			);
 		}
 		return noteInstance;
 	}
@@ -87,10 +84,7 @@ export default class Note {
 		if (noteData) {
 			return new Note(JSON.parse(noteData));
 		}
-		// } else {
-		// console.error(`Note with ID "${noteID}" not found.`);
 		return null;
-		// }
 	}
 
 	// static getAllNotes() {
