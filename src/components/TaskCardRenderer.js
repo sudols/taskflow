@@ -29,7 +29,7 @@ export default class TaskCardRenderer {
 								placeholder="Title"
 								class="outline-none text-heading text-lg font-semibold w-full"
 							/>
-							<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded">
+							<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
 								<i class="ti ti-dots-vertical"></i>
 							</button>
 						</div>
@@ -57,9 +57,11 @@ export default class TaskCardRenderer {
 			if (container.innerHTML.includes('newCardContainer')) {
 				container.querySelector('.newCardContainer').remove();
 			}
-			container.appendChild(
-				document.createRange().createContextualFragment(cardTemplate)
-			);
+			// append on top of container
+			container.insertAdjacentHTML('afterbegin', cardTemplate);
+			// container.appendChild(
+			// 	document.createRange().createContextualFragment(cardTemplate)
+			// );
 		}
 		// attach a new Note class to cardtemplate
 		const newCard = container.querySelector('.newCardContainer');
@@ -306,12 +308,16 @@ export default class TaskCardRenderer {
 			const textInput = cardElement.querySelector('#newTaskTitle');
 			const descriptionInput = cardElement.querySelector('#newTaskDescription');
 
+			const controller = new AbortController();
+			cardElement._abortController = controller;
+
 			const handleClickOutside = (event) => {
 				if (!cardElement.contains(event.target)) {
 					// Check if both inputs are empty
 					if (!textInput.value.trim() && !descriptionInput.value.trim()) {
 						cardElement.remove();
-						document.removeEventListener('click', handleClickOutside);
+						// document.removeEventListener('click', handleClickOutside);
+						controller.abort();
 						if (Note.getNoteData(noteInstance.id)) {
 							Note.deleteNote(noteInstance.id);
 							Category.removeNoteFromCategory(noteInstance.id, 'default');
@@ -320,8 +326,76 @@ export default class TaskCardRenderer {
 				}
 			};
 
-			document.addEventListener('click', handleClickOutside);
+			document.addEventListener('click', handleClickOutside, {
+				signal: controller.signal,
+			});
+			// cardElement._removeEventListener = handleClickOutside;
 		}
+	}
+
+	static attachThreeDotMenuListeners(cardElement, noteInstance) {
+		// check if data exist in input elements, if yes, then enable the three dot menu else don'nt
+		const threeDotMenu = cardElement.querySelector('.threeDotMenu');
+		const titleInput = cardElement.querySelector('#newTaskTitle');
+		const descriptionInput = cardElement.querySelector('#newTaskDescription');
+
+		cardElement.addEventListener('input', () => {
+			if (titleInput.value.trim() || descriptionInput.value.trim()) {
+				threeDotMenu.classList.remove('hidden');
+			} else {
+				threeDotMenu.classList.add('hidden');
+			}
+		});
+	}
+
+	static attachPushToRenderContainerListeners(cardElement, noteInstance) {
+		// push the note to the render container only if there exist any data in the input elements
+		// dont create new card in storage as it is already created
+		const container = document.querySelector('.cardDisplayContainer');
+
+		// check if click is done outside cardelement's container
+		const controller = new AbortController();
+		function addElementToContainer(event) {
+			if (
+				!cardElement.contains(event.target) &&
+				Note.getNoteData(noteInstance.id)
+			) {
+				// append as first child of container
+				container.insertAdjacentElement('afterbegin', cardElement);
+				cardElement.dataset.noteId = noteInstance.id;
+				cardElement.classList.remove('newCardContainer');
+				cardElement.classList.add('taskCard');
+				console.log('Card pushed to render container');
+
+				console.log(cardElement._abortController);
+				if (cardElement._abortController) {
+					cardElement._abortController.abort();
+					delete cardElement._abortController;
+				}
+				const clonedElement = cardElement.cloneNode(true);
+				const a = document.createElement('span');
+				a.textContent = 'task';
+				clonedElement.appendChild(a);
+				cardElement.parentNode.replaceChild(clonedElement, cardElement);
+
+				// document.removeEventListener('click', addElementToContainer);
+				controller.abort();
+			}
+		}
+		document.addEventListener('click', addElementToContainer, {
+			signal: controller.signal,
+		});
+		const observer = new MutationObserver((mutationsList) => {
+			if (!container.querySelector('.newCardContainer')) {
+				controller.abort();
+				observer.disconnect();
+				console.log('Observer disconnected');
+			}
+		});
+		observer.observe(container, {
+			childList: true,
+			subtree: true,
+		});
 	}
 
 	static SaveCardData(cardElement, NoteInstance) {
@@ -344,6 +418,8 @@ export default class TaskCardRenderer {
 
 	static initializeEventListeners() {
 		document.addEventListener('click', (event) => {
+			// if (event.target.classList.contains('taskCard')) {
+			// }
 			if (event.target.classList.contains('newTaskButton')) {
 				const { cardElement, noteInstance } =
 					TaskCardRenderer.createNewCardTemplate();
@@ -351,6 +427,11 @@ export default class TaskCardRenderer {
 				TaskCardRenderer.attachInputListeners(cardElement, noteInstance);
 				TaskCardRenderer.attachCalendarListeners(cardElement, noteInstance);
 				TaskCardRenderer.attachRemoveNewCardTemplate(cardElement, noteInstance);
+				TaskCardRenderer.attachThreeDotMenuListeners(cardElement, noteInstance);
+				TaskCardRenderer.attachPushToRenderContainerListeners(
+					cardElement,
+					noteInstance
+				);
 			}
 		});
 	}
@@ -358,5 +439,4 @@ export default class TaskCardRenderer {
 		this.initializeEventListeners();
 	}
 }
-
 TaskCardRenderer.init();
