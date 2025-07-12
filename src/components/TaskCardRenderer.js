@@ -57,15 +57,14 @@ export default class TaskCardRenderer {
 			if (container.innerHTML.includes('newCardContainer')) {
 				const existingCard = container.querySelector('.newCardContainer');
 				existingCard._abortController.abort();
-				console.log('existing card controller aborted');
 				existingCard.remove();
 			}
 			const controller = new AbortController();
 
 			container.insertAdjacentHTML('afterbegin', cardTemplate);
-			const newCard = container.querySelector('.newCardContainer');
-			if (newCard) {
-				const newNote = new Note({
+			const newCardElement = container.querySelector('.newCardContainer');
+			if (newCardElement) {
+				const newNoteInstance = new Note({
 					id: crypto.randomUUID(),
 					title: '',
 					description: '',
@@ -75,11 +74,11 @@ export default class TaskCardRenderer {
 					modified: new Date().toISOString(),
 					completed: false,
 				});
-				newCard.dataset.noteId = newNote.id;
-				newCard._abortController = controller;
+				newCardElement.dataset.noteId = newNoteInstance.id;
+				newCardElement._abortController = controller;
 				return {
-					cardElement: newCard,
-					noteInstance: newNote,
+					cardElement: newCardElement,
+					noteInstance: newNoteInstance,
 					controller: controller,
 				};
 			}
@@ -310,7 +309,6 @@ export default class TaskCardRenderer {
 
 		if (cardElement) {
 			const eventHandler = (event) => {
-				console.log(controller);
 				if (event.target === titleInput) {
 					noteInstance.updateNote({
 						title: titleInput.value,
@@ -402,9 +400,7 @@ export default class TaskCardRenderer {
 				cardElement.dataset.noteId = noteInstance.id;
 				cardElement.classList.remove('newCardContainer');
 				cardElement.classList.add('taskCard');
-				console.log('Card pushed to render container');
 
-				console.log(cardElement._abortController);
 				if (cardElement._abortController) {
 					cardElement._abortController.abort();
 					delete cardElement._abortController;
@@ -427,7 +423,6 @@ export default class TaskCardRenderer {
 			if (!container.querySelector('.newCardContainer')) {
 				controller.abort();
 				observer.disconnect();
-				console.log('Observer disconnected');
 			}
 		});
 		observer.observe(container, {
@@ -516,8 +511,6 @@ export default class TaskCardRenderer {
 
 	static initializeEventListeners() {
 		document.addEventListener('click', (event) => {
-			// if (event.target.classList.contains('taskCard')) {
-			// }
 			if (event.target.classList.contains('newTaskButton')) {
 				const { cardElement, noteInstance, controller } =
 					TaskCardRenderer.createNewCardTemplate();
@@ -546,6 +539,36 @@ export default class TaskCardRenderer {
 					noteInstance,
 					controller
 				);
+			}
+			if (event.target.classList.contains('taskCard')) {
+				const cardElement = event.target;
+				const noteId = cardElement.dataset.noteId;
+				if (cardElement._abortController) {
+					cardElement._abortController.abort();
+					delete cardElement._abortController;
+				}
+				const controller = new AbortController();
+				cardElement._abortController = controller;
+				if (noteId) {
+					const noteInstance = Note.getNoteData(noteId);
+					if (noteInstance) {
+						TaskCardRenderer.attachInputListeners(
+							cardElement,
+							noteInstance,
+							cardElement._abortController
+						);
+						TaskCardRenderer.attachCalendarListeners(
+							cardElement,
+							noteInstance,
+							cardElement._abortController
+						);
+						TaskCardRenderer.attachThreeDotMenuListeners(
+							cardElement,
+							noteInstance,
+							cardElement._abortController
+						);
+					}
+				}
 			}
 		});
 	}
