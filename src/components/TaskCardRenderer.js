@@ -169,14 +169,13 @@ export default class TaskCardRenderer {
 							noteInstance.updateNote({
 								dueDate: '',
 							});
-							console.log(noteInstance.dueDate);
+							Note.createNote(noteInstance);
 							return;
 						}
 						const today = new Date();
 						const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 						clearAllSelectedStates();
 						addFocusAndUpdateInstance(dueTodayButton, formattedDate);
-						console.log(noteInstance.dueDate);
 					}
 					if (event.target.classList.contains('dueTomorrow')) {
 						if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
@@ -184,7 +183,7 @@ export default class TaskCardRenderer {
 							noteInstance.updateNote({
 								dueDate: '',
 							});
-							console.log(noteInstance.dueDate);
+							Note.createNote(noteInstance);
 							return;
 						}
 						const today = new Date();
@@ -192,12 +191,10 @@ export default class TaskCardRenderer {
 						const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 						clearAllSelectedStates();
 						addFocusAndUpdateInstance(dueTomorrowButton, formattedDate);
-						console.log(noteInstance.dueDate);
 					}
 					if (event.target.closest('.dueCustomDate')) {
 						if (!event.target.classList.contains('bg-generic-btn-focus')) {
 							clearAllSelectedStates();
-							console.log(noteInstance.dueDate);
 						}
 						dueCustomDateButton.classList.remove('border-transparent');
 						dueCustomDateButton.classList.add(
@@ -226,13 +223,13 @@ export default class TaskCardRenderer {
 								noteInstance.updateNote({
 									dueDate: dateStr,
 								});
-								console.log(noteInstance.dueDate);
 								dueCustomDateButton.textContent = dateStr;
-								// addToggleButtonAndUpdateInstance(dueCustomDateButton, dateStr);
+								Note.createNote(noteInstance);
 							},
 						});
 						fp.open();
 					}
+					Note.createNote(noteInstance);
 				},
 				{ signal: controller.signal }
 			);
@@ -429,7 +426,6 @@ export default class TaskCardRenderer {
 				</div>
 			</div>`;
 		const checkDueDate = noteInstance.dueDate;
-		console.log('checkDueDate', checkDueDate);
 		const container = document.querySelector('.cardDisplayContainer');
 		if (container) {
 			container.insertAdjacentHTML('afterbegin', cardTemplate);
