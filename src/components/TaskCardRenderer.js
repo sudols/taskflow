@@ -329,24 +329,14 @@ export default class TaskCardRenderer {
 				Note.getNoteData(noteInstance.id)
 			) {
 				// append as first child of container
-				container.insertAdjacentElement('afterbegin', cardElement);
-				cardElement.dataset.noteId = noteInstance.id;
-				cardElement.classList.remove('newCardContainer');
-				cardElement.classList.add('taskCard');
-
+				cardElement.remove();
 				if (cardElement._abortController) {
 					cardElement._abortController.abort();
 					delete cardElement._abortController;
 				}
-				// const clonedElement = cardElement.cloneNode(true);
-				const a = document.createElement('span');
-				a.textContent = 'task';
-				// clonedElement.appendChild(a);
-				cardElement.appendChild(a);
-				// cardElement.parentNode.replaceChild(clonedElement, cardElement);
-
-				// document.removeEventListener('click', addElementToContainer);
 				controller.abort();
+
+				TaskCardRenderer.createCard(noteInstance);
 			}
 		}
 		document.addEventListener('click', addElementToContainer, {
@@ -378,7 +368,9 @@ export default class TaskCardRenderer {
 
 	static createCard(noteInstance) {
 		const cardTemplate = `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard">
+			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard data-note-id="${
+				noteInstance.id
+			}">
 				<div>
 					<label class="flex items-center justify-center cursor-pointer relative">
 						<input
@@ -392,7 +384,10 @@ export default class TaskCardRenderer {
 					</label>
 				</div>
 				<div class="w-full flex flex-col gap-2">
-					<div class="flex items-center justify-between">
+					${
+						noteInstance.title !== ''
+							? `
+					<div class="flex items-center justify-between titleContainer">
 						<input
 							type="text"
 							name="newTaskTitle"
@@ -405,10 +400,17 @@ export default class TaskCardRenderer {
 							<i class="ti ti-dots-vertical"></i>
 						</button>
 					</div>
+						`
+							: `
+					<div class="flex items-center justify-between titleContainer hidden">
+					</div>
+						
+						`
+					}
 					${
 						noteInstance.description !== ''
 							? `
-					<div class="dueContainer">
+					<div class="descriptionContainer">
 						<input
 							type="text"
 							name="newTaskDescription"
@@ -420,7 +422,7 @@ export default class TaskCardRenderer {
 					</div>
 						`
 							: `
-						<div class="dueContainer hidden">
+						<div class="descriptionContainer hidden">
 						</div>
 							`
 					}
