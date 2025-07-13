@@ -462,6 +462,23 @@ export default class TaskCardRenderer {
 
 	static updateCard(noteId) {}
 
+	static attachDestroyListeners(cardElement, noteInstance, controller) {
+		document.addEventListener(
+			'click',
+			(event) => {
+				if (!cardElement.contains(event.target)) {
+					if (cardElement._abortController) {
+						cardElement._abortController.abort();
+						delete cardElement._abortController;
+					}
+				}
+			},
+			{
+				signal: controller.signal,
+			}
+		);
+	}
+
 	static initializeEventListeners() {
 		document.addEventListener('click', (event) => {
 			if (event.target.classList.contains('newTaskButton')) {
@@ -493,17 +510,27 @@ export default class TaskCardRenderer {
 					controller
 				);
 			}
-			if (event.target.classList.contains('taskCard')) {
-				const cardElement = event.target;
+
+			if (event.target.closest('.taskCard')) {
+				const cardElement = event.target.closest('.taskCard');
 				const noteId = cardElement.dataset.noteId;
+
 				if (cardElement._abortController) {
 					cardElement._abortController.abort();
 					delete cardElement._abortController;
 				}
+
 				const controller = new AbortController();
 				cardElement._abortController = controller;
+				if (!event.target.closest('.taskCard') === cardElement) {
+					cardElement._abortController.abort();
+					delete cardElement._abortController;
+					console.warn('Clicked outside the task card, aborting controller.');
+					return;
+				}
 				if (noteId) {
 					const noteInstance = Note.getNoteData(noteId);
+					// console.log(cardElement);
 					if (noteInstance) {
 						TaskCardRenderer.attachInputListeners(
 							cardElement,
@@ -516,6 +543,11 @@ export default class TaskCardRenderer {
 							cardElement._abortController
 						);
 						TaskCardRenderer.attachThreeDotMenuListeners(
+							cardElement,
+							noteInstance,
+							cardElement._abortController
+						);
+						TaskCardRenderer.attachDestroyListeners(
 							cardElement,
 							noteInstance,
 							cardElement._abortController
