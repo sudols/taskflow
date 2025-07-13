@@ -336,7 +336,13 @@ export default class TaskCardRenderer {
 				}
 				controller.abort();
 
-				TaskCardRenderer.createCard(noteInstance);
+				let card = TaskCardRenderer.createCard(noteInstance);
+				if (container) {
+					container.insertAdjacentHTML('afterbegin', card);
+					// TaskCardRenderer.renderCards('default');
+				} else {
+					console.error('Container not found to render the card.');
+				}
 			}
 		}
 		document.addEventListener('click', addElementToContainer, {
@@ -368,7 +374,7 @@ export default class TaskCardRenderer {
 
 	static createCard(noteInstance) {
 		const cardTemplate = `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard" data-note-id="${
+			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition" data-note-id="${
 				noteInstance.id
 			}">
 				<div>
@@ -384,10 +390,9 @@ export default class TaskCardRenderer {
 					</label>
 				</div>
 				<div class="w-full flex flex-col gap-2">
-					${
-						noteInstance.title !== ''
-							? `
-					<div class="flex items-center justify-between titleContainer">
+					<div class="flex items-center justify-between titleContainer ${
+						noteInstance.title ? 'visible' : 'hidden'
+					}">
 						<input
 							type="text"
 							name="newTaskTitle"
@@ -400,17 +405,9 @@ export default class TaskCardRenderer {
 							<i class="ti ti-dots-vertical"></i>
 						</button>
 					</div>
-						`
-							: `
-					<div class="flex items-center justify-between titleContainer hidden">
-					</div>
-						
-						`
-					}
-					${
-						noteInstance.description !== ''
-							? `
-					<div class="descriptionContainer">
+					<div class="descriptionContainer ${
+						noteInstance.description ? 'visible' : 'hidden'
+					}">
 						<input
 							type="text"
 							name="newTaskDescription"
@@ -420,32 +417,20 @@ export default class TaskCardRenderer {
 							value="${noteInstance.description || ''}"
 						/>
 					</div>
-						`
-							: `
-						<div class="descriptionContainer hidden">
-						</div>
-							`
-					}
-					${
-						noteInstance.dueDate !== ''
-							? `
-					<div class="dueDateParentContainer">
+					<div class="dueDateParentContainer
+					 ${noteInstance.dueDate !== '' ? 'visible' : 'hidden'}">
 						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
 							<span>Due: </span>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${noteInstance.dueDate}</button>
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${
+								noteInstance.dueDate
+							}</button>
 						</p>
 					</div>
-						`
-							: `
-					<div class="dueDateParentContainer hidden">
-					</div>
-						`
-					}
 				</div>
 			</div>`;
 		const container = document.querySelector('.cardDisplayContainer');
 		if (container) {
-			container.insertAdjacentHTML('afterbegin', cardTemplate);
+			return cardTemplate;
 		}
 	}
 
@@ -455,7 +440,8 @@ export default class TaskCardRenderer {
 		if (container) {
 			container.innerHTML = '';
 			notes.forEach((noteId) => {
-				TaskCardRenderer.createCard(Note.getNoteData(noteId));
+				let card = TaskCardRenderer.createCard(Note.getNoteData(noteId));
+				container.insertAdjacentHTML('afterbegin', card);
 			});
 		}
 	}
@@ -471,12 +457,26 @@ export default class TaskCardRenderer {
 						cardElement._abortController.abort();
 						delete cardElement._abortController;
 					}
+					let card = TaskCardRenderer.createCard(noteInstance);
+					cardElement.replaceWith(
+						document.createRange().createContextualFragment(card)
+					);
 				}
 			},
 			{
 				signal: controller.signal,
 			}
 		);
+	}
+
+	static expandCard(cardElement, noteInstance, controller) {
+		cardElement.querySelector('.titleContainer').classList.remove('hidden');
+		cardElement
+			.querySelector('.descriptionContainer')
+			.classList.remove('hidden');
+		cardElement
+			.querySelector('.dueDateParentContainer')
+			.classList.remove('hidden');
 	}
 
 	static initializeEventListeners() {
@@ -522,15 +522,9 @@ export default class TaskCardRenderer {
 
 				const controller = new AbortController();
 				cardElement._abortController = controller;
-				if (!event.target.closest('.taskCard') === cardElement) {
-					cardElement._abortController.abort();
-					delete cardElement._abortController;
-					console.warn('Clicked outside the task card, aborting controller.');
-					return;
-				}
+
 				if (noteId) {
 					const noteInstance = Note.getNoteData(noteId);
-					// console.log(cardElement);
 					if (noteInstance) {
 						TaskCardRenderer.attachInputListeners(
 							cardElement,
@@ -548,6 +542,11 @@ export default class TaskCardRenderer {
 							cardElement._abortController
 						);
 						TaskCardRenderer.attachDestroyListeners(
+							cardElement,
+							noteInstance,
+							cardElement._abortController
+						);
+						TaskCardRenderer.expandCard(
 							cardElement,
 							noteInstance,
 							cardElement._abortController
