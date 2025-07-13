@@ -98,9 +98,10 @@ export default class TaskCardRenderer {
 	}
 
 	static attachCalendarListeners(cardElement, noteInstance, controller) {
-		const dueCustomDateButton = cardElement.querySelector('.dueCustomDate');
-		const dueTodayButton = cardElement.querySelector('.dueToday');
-		const dueTomorrowButton = cardElement.querySelector('.dueTomorrow');
+		const dueCustomDateButton =
+			cardElement.querySelector('.dueCustomDate') || null;
+		const dueTodayButton = cardElement.querySelector('.dueToday') || null;
+		const dueTomorrowButton = cardElement.querySelector('.dueTomorrow') || null;
 		const dueDateContainer = cardElement.querySelector('.dueDateContainer');
 
 		const allDueButtons = [
@@ -112,6 +113,7 @@ export default class TaskCardRenderer {
 		// Helper function to clear all selected states
 		const clearAllSelectedStates = () => {
 			allDueButtons.forEach((btn) => {
+				if (btn === null) return;
 				btn.classList.remove('bg-generic-btn-focus', 'border-gray-500');
 				btn.classList.add('border-transparent');
 				if (
@@ -160,6 +162,37 @@ export default class TaskCardRenderer {
 		// };
 
 		if (dueDateContainer) {
+			cardElement.addEventListener(
+				'click',
+				(event) => {
+					if (event.target !== dueDateContainer) {
+						if (dueCustomDateButton) {
+							dueCustomDateButton.classList.remove(
+								'bg-generic-btn-focus',
+								'border-gray-500'
+							);
+							dueCustomDateButton.classList.add('border-transparent');
+						}
+
+						if (dueTodayButton) {
+							dueTodayButton.classList.remove(
+								'bg-generic-btn-focus',
+								'border-gray-500'
+							);
+							dueTodayButton.classList.add('border-transparent');
+						}
+
+						if (dueTomorrowButton) {
+							dueTomorrowButton.classList.remove(
+								'bg-generic-btn-focus',
+								'border-gray-500'
+							);
+							dueTomorrowButton.classList.add('border-transparent');
+						}
+					}
+				},
+				{ controller: controller.signal }
+			);
 			dueDateContainer.addEventListener(
 				'click',
 				(event) => {
@@ -195,8 +228,15 @@ export default class TaskCardRenderer {
 						clearAllSelectedStates();
 						addFocusAndUpdateInstance(dueTomorrowButton, formattedDate);
 					}
+
 					if (event.target.closest('.dueCustomDate')) {
-						if (!event.target.classList.contains('bg-generic-btn-focus')) {
+						if (
+							event.target.closest('.dueCustomDate').textContent === '' ||
+							(!event.target.classList.contains('bg-generic-btn-focus') &&
+								dueTomorrowButton &&
+								dueTodayButton)
+						) {
+							console.log('clear');
 							clearAllSelectedStates();
 						}
 						dueCustomDateButton.classList.remove('border-transparent');
@@ -217,7 +257,7 @@ export default class TaskCardRenderer {
 						}
 
 						// calculates calendar position based on calendar's button position
-						dateInput.style.top = `${buttonRect.bottom + 24}px`;
+						dateInput.style.top = `${buttonRect.bottom + 5}px`;
 						dateInput.style.left = `${buttonRect.left - 7}px`;
 
 						const fp = flatpickr(dateInput, {
@@ -410,7 +450,7 @@ export default class TaskCardRenderer {
 					</div>
 					<div class="descriptionContainer ${
 						noteInstance.description ? 'visible' : 'hidden'
-					}">
+					} flex flex-col w-full">
 						<input
 							type="text"
 							name="newTaskDescription"
@@ -424,7 +464,7 @@ export default class TaskCardRenderer {
 					 ${noteInstance.dueDate !== '' ? 'visible' : 'hidden'}">
 						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
 							<span>Due: </span>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button">${
 								noteInstance.dueDate
 							}</button>
 						</p>
