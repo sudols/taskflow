@@ -568,9 +568,7 @@ export default class TaskCardRenderer {
 }
 TaskCardRenderer.init();
 
-// Make TaskCardRenderer and DevUtils available globally for development
 if (typeof window !== 'undefined') {
-	// window.TaskCardRenderer = TaskCardRenderer;
 	window.DevUtils = DevUtils;
 
 	window.generateSampleTasks = () => DevUtils.generateSampleTasks();
