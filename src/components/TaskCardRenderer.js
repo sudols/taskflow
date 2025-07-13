@@ -3,6 +3,9 @@ import Category from '../models/Category.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+// utility for random notes generation
+import DevUtils from '../utils/devUtils.js';
+
 export default class TaskCardRenderer {
 	static createNewCardTemplate() {
 		const cardTemplate = `
@@ -440,8 +443,11 @@ export default class TaskCardRenderer {
 		if (container) {
 			container.innerHTML = '';
 			notes.forEach((noteId) => {
-				let card = TaskCardRenderer.createCard(Note.getNoteData(noteId));
-				container.insertAdjacentHTML('afterbegin', card);
+				const noteData = Note.getNoteData(noteId);
+				if (noteData) {
+					let card = TaskCardRenderer.createCard(Note.getNoteData(noteId));
+					container.insertAdjacentHTML('afterbegin', card);
+				}
 			});
 		}
 	}
@@ -561,6 +567,16 @@ export default class TaskCardRenderer {
 	}
 }
 TaskCardRenderer.init();
+
+// Make TaskCardRenderer and DevUtils available globally for development
+if (typeof window !== 'undefined') {
+	// window.TaskCardRenderer = TaskCardRenderer;
+	window.DevUtils = DevUtils;
+
+	window.generateSampleTasks = () => DevUtils.generateSampleTasks();
+	window.clearAllTasks = () => DevUtils.clearAllTasks();
+	window.generateBulkTasks = (count) => DevUtils.generateBulkTasks(count);
+}
 
 // trigger render on page load
 document.addEventListener('DOMContentLoaded', () => {
