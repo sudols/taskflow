@@ -368,7 +368,7 @@ export default class TaskCardRenderer {
 
 	static createCard(noteInstance) {
 		const cardTemplate = `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard data-note-id="${
+			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard" data-note-id="${
 				noteInstance.id
 			}">
 				<div>
