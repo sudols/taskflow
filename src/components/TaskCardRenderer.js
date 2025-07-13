@@ -392,20 +392,20 @@ export default class TaskCardRenderer {
 					</label>
 				</div>
 				<div class="w-full flex flex-col gap-2">
-					<div>
-						<div class="flex items-center justify-between">
-							<input
-								type="text"
-								name="newTaskTitle"
-								id="newTaskTitle"
-								placeholder="Title"
-								value="${noteInstance.title || ''}"
-								class="outline-none text-heading text-lg font-semibold w-full"
-							/>
-							<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
-								<i class="ti ti-dots-vertical"></i>
-							</button>
-						</div>
+					<div class="flex items-center justify-between">
+						<input
+							type="text"
+							name="newTaskTitle"
+							id="newTaskTitle"
+							placeholder="Title"
+							value="${noteInstance.title || ''}"
+							class="outline-none text-heading text-lg font-semibold w-full"
+						/>
+						<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
+							<i class="ti ti-dots-vertical"></i>
+						</button>
+					</div>
+					<div class="dueContainer">
 						<input
 							type="text"
 							name="newTaskDescription"
@@ -415,23 +415,27 @@ export default class TaskCardRenderer {
 							value="${noteInstance.description || ''}"
 						/>
 					</div>
-					<div>
-						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
-							<span>Due: </span>
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">"${
-								noteInstance.dueDate
-							}"</button>
-						</p>
+					<div class="dueDateParentContainer">
+						${
+							noteInstance.dueDate !== ''
+								? `
+							<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
+								<span>Due: </span>
+								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${noteInstance.dueDate}</button>
+							</p>
+							`
+								: ''
+						}
 					</div>
 				</div>
 			</div>`;
-		const checkDueDate = noteInstance.dueDate;
+		const dueDateParentContainer = null;
+		if (noteInstance.dueDate === '') {
+			// cardTemplate.
+		}
 		const container = document.querySelector('.cardDisplayContainer');
 		if (container) {
 			container.insertAdjacentHTML('afterbegin', cardTemplate);
-			// const noteElement = container.querySelector(
-			// 	`[data-note-id="${noteInstance.id}"]`
-			// );
 		}
 	}
 
