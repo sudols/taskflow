@@ -405,6 +405,9 @@ export default class TaskCardRenderer {
 							<i class="ti ti-dots-vertical"></i>
 						</button>
 					</div>
+					${
+						noteInstance.description !== ''
+							? `
 					<div class="dueContainer">
 						<input
 							type="text"
@@ -415,24 +418,29 @@ export default class TaskCardRenderer {
 							value="${noteInstance.description || ''}"
 						/>
 					</div>
-					<div class="dueDateParentContainer">
-						${
-							noteInstance.dueDate !== ''
-								? `
-							<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
-								<span>Due: </span>
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${noteInstance.dueDate}</button>
-							</p>
+						`
+							: `
+						<div class="dueContainer hidden">
+						</div>
 							`
-								: ''
-						}
+					}
+					${
+						noteInstance.dueDate !== ''
+							? `
+					<div class="dueDateParentContainer">
+						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
+							<span>Due: </span>
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">${noteInstance.dueDate}</button>
+						</p>
 					</div>
+						`
+							: `
+					<div class="dueDateParentContainer hidden">
+					</div>
+						`
+					}
 				</div>
 			</div>`;
-		const dueDateParentContainer = null;
-		if (noteInstance.dueDate === '') {
-			// cardTemplate.
-		}
 		const container = document.querySelector('.cardDisplayContainer');
 		if (container) {
 			container.insertAdjacentHTML('afterbegin', cardTemplate);
