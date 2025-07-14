@@ -1,535 +1,153 @@
 import Note from '../models/Note.js';
-import Category from '../models/Category.js';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
+import CardManager from './CardManager.js';
+import CardEventManager from './CardEventManager.js';
 
 // utility for random notes generation
 import DevUtils from '../utils/devUtils.js';
 
+/**
+ * TaskCardRenderer - Main orchestrator for task card functionality
+ * This class coordinates between CardManager and CardEventManager
+ */
 export default class TaskCardRenderer {
+	/**
+	 * Create a new editable task card
+	 */
 	static createNewCardTemplate() {
-		const cardTemplate = `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg newCardContainer">
-				<div>
-					<label class="flex items-center justify-center cursor-pointer relative">
-						<input
-							type="checkbox"
-							class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition
-							"
-						/>
-						<span class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition">
-							<i class="ti ti-check"></i>
-						</span>
-					</label>
-				</div>
-				<div class="w-full flex flex-col gap-2">
-					<div>
-						<div class="flex items-center justify-between">
-							<input
-								type="text"
-								name="newTaskTitle"
-								id="newTaskTitle"
-								placeholder="Title"
-								class="outline-none text-heading text-lg font-semibold w-full"
-							/>
-							<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
-								<i class="ti ti-dots-vertical"></i>
-							</button>
-						</div>
-						<input
-							type="text"
-							name="newTaskDescription"
-							id="newTaskDescription"
-							class="outline-none text-body text-sm line-clamp-2"
-							placeholder="details"
-						/>
-					</div>
-					<div>
-						<p class="text-body text-xs flex items-center gap-2">
-							<span class="dueDateContainer"> 
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">Today</button>
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueTomorrow transition" type="button">Tomorrow</button>
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button"><i class="ti ti-calendar-event"></i></button>
-							</span>
-						</p>
-					</div>
-				</div>
-			</div>`;
-		const triggerButton = document.querySelector('.newTaskButton');
-		const container = document.querySelector('.cardDisplayContainer');
-		if (container) {
-			if (container.innerHTML.includes('newCardContainer')) {
-				const existingCard = container.querySelector('.newCardContainer');
-				existingCard._abortController.abort();
-				existingCard.remove();
-			}
-			const controller = new AbortController();
-
-			container.insertAdjacentHTML('afterbegin', cardTemplate);
-			const newCardElement = container.querySelector('.newCardContainer');
-			if (newCardElement) {
-				const newNoteInstance = new Note({
-					id: crypto.randomUUID(),
-					title: '',
-					description: '',
-					dueDate: '',
-					priority: 'normal',
-					created: new Date().toISOString(),
-					modified: new Date().toISOString(),
-					completed: false,
-				});
-				newCardElement.dataset.noteId = newNoteInstance.id;
-				newCardElement._abortController = controller;
-				return {
-					cardElement: newCardElement,
-					noteInstance: newNoteInstance,
-					controller: controller,
-				};
-			}
-			console.error('failed to create new card element');
-			return null;
-			// append on top of container
-			// container.appendChild(
-			// 	document.createRange().createContextualFragment(cardTemplate)
-			// );
-		}
-		// attach a new Note class to cardtemplate
+		return CardManager.createNewCard();
 	}
 
+	/**
+	 * Attach calendar/date picker listeners to a card
+	 */
 	static attachCalendarListeners(cardElement, noteInstance, controller) {
-		const dueCustomDateButton =
-			cardElement.querySelector('.dueCustomDate') || null;
-		const dueTodayButton = cardElement.querySelector('.dueToday') || null;
-		const dueTomorrowButton = cardElement.querySelector('.dueTomorrow') || null;
-		const dueDateContainer = cardElement.querySelector('.dueDateContainer');
-
-		const allDueButtons = [
-			dueTodayButton,
-			dueTomorrowButton,
-			dueCustomDateButton,
-		];
-
-		// Helper function to clear all selected states
-		const clearAllSelectedStates = () => {
-			allDueButtons.forEach((btn) => {
-				if (btn === null) return;
-				btn.classList.remove('bg-generic-btn-focus', 'border-gray-500');
-				btn.classList.add('border-transparent');
-				if (
-					btn === dueCustomDateButton &&
-					btn.getElementsByTagName('i').length !== 1
-				) {
-					const child = document.createElement('i');
-					child.classList.add('ti', 'ti-calendar-event');
-					btn.innerHTML = '';
-					btn.appendChild(child);
-				}
-			});
-		};
-
-		const addFocusAndUpdateInstance = (button, formattedDate) => {
-			button.classList.remove('border-transparent');
-			button.classList.add('bg-generic-btn-focus', 'border-gray-500');
-
-			noteInstance.updateNote({
-				dueDate: formattedDate,
-			});
-		};
-
-		// const toggleRemoveButton = (button) => {
-		// 	// future implementation to toggle remove button
-		// 	// change to made remove focus when clicking only on X remove icon
-		// 	// else, openup calendar, similar to google tasks
-		// 	if (button.querySelector('.ti-x')) {
-		// 		button.querySelector('.ti-x').remove();
-		// 		return;
-		// 	}
-		// 	button.classList.add('flex', 'text-center', 'gap-1', 'items-center');
-		// 	const icon = document.createElement('i');
-		// 	icon.className = 'ti ti-x cursor-pointer text-white';
-		// 	button.appendChild(icon);
-		// 	// icon.addEventListener('click', (event) => {
-		// 	// 	event.preventDefault();
-		// 	// 	event.stopPropagation();
-		// 	// 	clearAllSelectedStates();
-		// 	// 	// button.classList.remove('bg-generic-btn-focus', 'border-gray-500');
-		// 	// 	// button.classList.add('border-transparent');
-		// 	// 	noteInstance.updateNote({
-		// 	// 		dueDate: '',
-		// 	// 	});
-		// 	// });
-		// };
-
-		if (dueDateContainer) {
-			cardElement.addEventListener(
-				'click',
-				(event) => {
-					if (event.target !== dueDateContainer) {
-						if (dueCustomDateButton) {
-							dueCustomDateButton.classList.remove(
-								'bg-generic-btn-focus',
-								'border-gray-500'
-							);
-							dueCustomDateButton.classList.add('border-transparent');
-						}
-
-						if (dueTodayButton) {
-							dueTodayButton.classList.remove(
-								'bg-generic-btn-focus',
-								'border-gray-500'
-							);
-							dueTodayButton.classList.add('border-transparent');
-						}
-
-						if (dueTomorrowButton) {
-							dueTomorrowButton.classList.remove(
-								'bg-generic-btn-focus',
-								'border-gray-500'
-							);
-							dueTomorrowButton.classList.add('border-transparent');
-						}
-					}
-				},
-				{ controller: controller.signal }
-			);
-			dueDateContainer.addEventListener(
-				'click',
-				(event) => {
-					event.preventDefault();
-					event.stopPropagation();
-
-					if (event.target.classList.contains('dueToday')) {
-						if (dueTodayButton.classList.contains('bg-generic-btn-focus')) {
-							clearAllSelectedStates();
-							noteInstance.updateNote({
-								dueDate: '',
-							});
-							Note.createNote(noteInstance);
-							return;
-						}
-						const today = new Date();
-						const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-						clearAllSelectedStates();
-						addFocusAndUpdateInstance(dueTodayButton, formattedDate);
-					}
-					if (event.target.classList.contains('dueTomorrow')) {
-						if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
-							clearAllSelectedStates();
-							noteInstance.updateNote({
-								dueDate: '',
-							});
-							Note.createNote(noteInstance);
-							return;
-						}
-						const today = new Date();
-						today.setDate(today.getDate() + 1);
-						const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-						clearAllSelectedStates();
-						addFocusAndUpdateInstance(dueTomorrowButton, formattedDate);
-					}
-
-					if (event.target.closest('.dueCustomDate')) {
-						if (
-							event.target.closest('.dueCustomDate').textContent === '' ||
-							(!event.target.classList.contains('bg-generic-btn-focus') &&
-								dueTomorrowButton &&
-								dueTodayButton)
-						) {
-							console.log('clear');
-							clearAllSelectedStates();
-						}
-						dueCustomDateButton.classList.remove('border-transparent');
-						dueCustomDateButton.classList.add(
-							'bg-generic-btn-focus',
-							'border-gray-500'
-						);
-
-						const buttonRect = dueCustomDateButton.getBoundingClientRect();
-						let dateInput = cardElement.querySelector('.hidden-date-input');
-						if (!dateInput) {
-							dateInput = document.createElement('input');
-							dateInput.type = 'text';
-							dateInput.className = 'hidden-date-input sr-only';
-							dateInput.style.position = 'absolute';
-							dateInput.style.visibility = 'hidden';
-							dueCustomDateButton.insertAdjacentElement('afterend', dateInput);
-						}
-
-						// calculates calendar position based on calendar's button position
-						dateInput.style.top = `${buttonRect.bottom + 5}px`;
-						dateInput.style.left = `${buttonRect.left - 7}px`;
-
-						const fp = flatpickr(dateInput, {
-							dateFormat: 'Y-m-d',
-							onChange: (selectedDates, dateStr) => {
-								noteInstance.updateNote({
-									dueDate: dateStr,
-								});
-								dueCustomDateButton.textContent = dateStr;
-								Note.createNote(noteInstance);
-							},
-						});
-						fp.open();
-					}
-					Note.createNote(noteInstance);
-				},
-				{ signal: controller.signal }
-			);
-		}
-	}
-
-	static attachInputListeners(cardElement, noteInstance, controller) {
-		const titleInput = cardElement.querySelector('#newTaskTitle');
-		const descriptionInput = cardElement.querySelector('#newTaskDescription');
-
-		if (cardElement) {
-			const eventHandler = (event) => {
-				if (event.target === titleInput) {
-					noteInstance.updateNote({
-						title: titleInput.value,
-					});
-
-					TaskCardRenderer.SaveCardData(cardElement, noteInstance);
-				} else if (event.target === descriptionInput) {
-					noteInstance.description = descriptionInput.value;
-					noteInstance.updateNote({
-						description: descriptionInput.value,
-					});
-					TaskCardRenderer.SaveCardData(cardElement, noteInstance);
-				}
-			};
-			cardElement.addEventListener('input', eventHandler, {
-				signal: controller.signal,
-			});
-		}
-	}
-
-	static attachRemoveNewCardTemplate(cardElement, noteInstance, controller) {
-		if (cardElement) {
-			const textInput = cardElement.querySelector('#newTaskTitle');
-			const descriptionInput = cardElement.querySelector('#newTaskDescription');
-
-			// const controller = new AbortController();
-			// cardElement._abortController = controller;
-
-			const handleClickOutside = (event) => {
-				if (!cardElement.contains(event.target)) {
-					// Check if both inputs are empty
-					if (!textInput.value.trim() && !descriptionInput.value.trim()) {
-						controller.abort();
-						cardElement.remove();
-						if (Note.getNoteData(noteInstance.id)) {
-							Note.deleteNote(noteInstance.id);
-							Category.removeNoteFromCategory(noteInstance.id, 'default');
-						}
-					}
-				}
-			};
-
-			document.addEventListener('click', handleClickOutside, {
-				signal: controller.signal,
-			});
-			// cardElement._removeEventListener = handleClickOutside;
-		}
-	}
-
-	static attachThreeDotMenuListeners(cardElement, noteInstance, controller) {
-		// check if data exist in input elements, if yes, then enable the three dot menu else don'nt
-		const threeDotMenu = cardElement.querySelector('.threeDotMenu');
-		const titleInput = cardElement.querySelector('#newTaskTitle');
-		const descriptionInput = cardElement.querySelector('#newTaskDescription');
-
-		cardElement.addEventListener(
-			'input',
-			() => {
-				if (titleInput.value.trim() || descriptionInput.value.trim()) {
-					threeDotMenu.classList.remove('hidden');
-				} else {
-					threeDotMenu.classList.add('hidden');
-				}
-			},
-			{
-				signal: controller.signal,
-			}
+		return CardEventManager.attachCalendarListeners(
+			cardElement,
+			noteInstance,
+			controller
 		);
 	}
 
+	/**
+	 * Attach input field listeners to a card
+	 */
+	static attachInputListeners(cardElement, noteInstance, controller) {
+		return CardEventManager.attachInputListeners(
+			cardElement,
+			noteInstance,
+			controller
+		);
+	}
+
+	/**
+	 * Attach listeners for removing empty new cards
+	 */
+	static attachRemoveNewCardTemplate(cardElement, noteInstance, controller) {
+		return CardEventManager.attachRemoveNewCardListeners(
+			cardElement,
+			noteInstance,
+			controller
+		);
+	}
+
+	/**
+	 * Attach three-dot menu listeners to a card
+	 */
+	static attachThreeDotMenuListeners(cardElement, noteInstance, controller) {
+		return CardEventManager.attachThreeDotMenuListeners(
+			cardElement,
+			noteInstance,
+			controller
+		);
+	}
+
+	/**
+	 * Attach listeners for transitioning cards to display container
+	 */
 	static attachPushToRenderContainerListeners(
 		cardElement,
 		noteInstance,
 		controller
 	) {
-		// push the note to the render container only if there exist any data in the input elements
-		// dont create new card in storage as it is already created
-		const container = document.querySelector('.cardDisplayContainer');
-
-		// check if click is done outside cardelement's container
-		// const controller = new AbortController();
-		function addElementToContainer(event) {
-			if (
-				!cardElement.contains(event.target) &&
-				Note.getNoteData(noteInstance.id)
-			) {
-				// append as first child of container
-				cardElement.remove();
-				if (cardElement._abortController) {
-					cardElement._abortController.abort();
-					delete cardElement._abortController;
-				}
-				controller.abort();
-
-				let card = TaskCardRenderer.createCard(noteInstance);
-				if (container) {
-					container.insertAdjacentHTML('afterbegin', card);
-					// TaskCardRenderer.renderCards('default');
-				} else {
-					console.error('Container not found to render the card.');
-				}
-			}
-		}
-		document.addEventListener('click', addElementToContainer, {
-			signal: controller.signal,
-		});
-		const observer = new MutationObserver((mutationsList) => {
-			if (!container.querySelector('.newCardContainer')) {
-				controller.abort();
-				observer.disconnect();
-			}
-		});
-		observer.observe(container, {
-			childList: true,
-			subtree: true,
-		});
+		return CardEventManager.attachCardTransitionListeners(
+			cardElement,
+			noteInstance,
+			controller
+		);
 	}
 
-	static SaveCardData(cardElement, NoteInstance) {
+	/**
+	 * Save card data to storage
+	 */
+	static SaveCardData(cardElement, noteInstance) {
 		const titleInput = cardElement.querySelector('#newTaskTitle');
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
+
 		if (titleInput.value || descriptionInput.value) {
-			NoteInstance.updateNote({
+			noteInstance.updateNote({
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
-			Note.createNote(NoteInstance);
+			Note.createNote(noteInstance);
 		}
 	}
 
+	/**
+	 * Create a display card from a note instance
+	 */
 	static createCard(noteInstance) {
-		const cardTemplate = `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition" data-note-id="${
-				noteInstance.id
-			}">
-				<div>
-					<label class="flex items-center justify-center cursor-pointer relative">
-						<input
-							type="checkbox"
-							class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition
-							"
-						/>
-						<span class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition">
-							<i class="ti ti-check"></i>
-						</span>
-					</label>
-				</div>
-				<div class="w-full flex flex-col gap-2">
-					<div class="flex items-center justify-between titleContainer ${
-						noteInstance.title ? 'visible' : 'hidden'
-					}">
-						<input
-							type="text"
-							name="newTaskTitle"
-							id="newTaskTitle"
-							placeholder="Title"
-							value="${noteInstance.title || ''}"
-							class="outline-none text-heading text-lg font-semibold w-full"
-						/>
-						<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
-							<i class="ti ti-dots-vertical"></i>
-						</button>
-					</div>
-					<div class="descriptionContainer ${
-						noteInstance.description ? 'visible' : 'hidden'
-					} flex flex-col w-full">
-						<input
-							type="text"
-							name="newTaskDescription"
-							id="newTaskDescription"
-							class="outline-none text-body text-sm line-clamp-2"
-							placeholder="details"
-							value="${noteInstance.description || ''}"
-						/>
-					</div>
-					<div class="dueDateParentContainer
-					 ${noteInstance.dueDate !== '' ? 'visible' : 'hidden'}">
-						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button">${
-								noteInstance.dueDate === ''
-									? '<i class="ti ti-calendar-event"></i>'
-									: noteInstance.dueDate
-							}</button
-						</p>
-					</div>
-				</div>
-			</div>`;
-		const container = document.querySelector('.cardDisplayContainer');
-		if (container) {
-			return cardTemplate;
-		}
+		return CardManager.createDisplayCard(noteInstance);
 	}
 
+	/**
+	 * Render all cards for a category
+	 */
 	static renderCards(categoryName) {
-		const notes = Category.getCategoryNotes(categoryName);
-		const container = document.querySelector('.cardDisplayContainer');
-		if (container) {
-			container.innerHTML = '';
-			notes.forEach((noteId) => {
-				const noteData = Note.getNoteData(noteId);
-				if (noteData) {
-					let card = TaskCardRenderer.createCard(Note.getNoteData(noteId));
-					container.insertAdjacentHTML('afterbegin', card);
-				}
-			});
-		}
+		return CardManager.renderCards(categoryName);
 	}
 
-	static updateCard(noteId) {}
+	/**
+	 * Update an existing card
+	 */
+	static updateCard(noteId) {
+		return CardManager.updateCard(noteId);
+	}
 
+	/**
+	 * Attach destroy listeners for cleaning up card state
+	 */
 	static attachDestroyListeners(cardElement, noteInstance, controller) {
 		document.addEventListener(
 			'click',
 			(event) => {
 				if (!cardElement.contains(event.target)) {
-					if (cardElement._abortController) {
-						cardElement._abortController.abort();
-						delete cardElement._abortController;
-					}
-					let card = TaskCardRenderer.createCard(noteInstance);
-					cardElement.replaceWith(
-						document.createRange().createContextualFragment(card)
-					);
+					CardManager.transitionToDisplayMode(cardElement, noteInstance);
 				}
 			},
-			{
-				signal: controller.signal,
-			}
+			{ signal: controller.signal }
 		);
 	}
 
+	/**
+	 * Expand a card to show all fields
+	 */
 	static expandCard(cardElement, noteInstance, controller) {
-		cardElement.querySelector('.titleContainer').classList.remove('hidden');
-		cardElement
-			.querySelector('.descriptionContainer')
-			.classList.remove('hidden');
-		cardElement
-			.querySelector('.dueDateParentContainer')
-			.classList.remove('hidden');
+		return CardManager.expandCard(cardElement);
 	}
 
+	/**
+	 * Initialize global event listeners for the task card system
+	 */
 	static initializeEventListeners() {
 		document.addEventListener('click', (event) => {
+			// Handle new task button clicks
 			if (event.target.classList.contains('newTaskButton')) {
-				const { cardElement, noteInstance, controller } =
-					TaskCardRenderer.createNewCardTemplate();
+				const result = TaskCardRenderer.createNewCardTemplate();
+				if (!result) return;
+
+				const { cardElement, noteInstance, controller } = result;
+
+				// Attach all necessary event listeners
 				TaskCardRenderer.attachInputListeners(
 					cardElement,
 					noteInstance,
@@ -557,66 +175,72 @@ export default class TaskCardRenderer {
 				);
 			}
 
+			// Handle existing task card clicks
 			if (event.target.closest('.taskCard')) {
 				const cardElement = event.target.closest('.taskCard');
 				const noteId = cardElement.dataset.noteId;
 
+				// Cleanup existing controller
 				if (cardElement._abortController) {
 					cardElement._abortController.abort();
 					delete cardElement._abortController;
 				}
 
+				// Create new controller
 				const controller = new AbortController();
 				cardElement._abortController = controller;
 
 				if (noteId) {
 					const noteInstance = Note.getNoteData(noteId);
 					if (noteInstance) {
+						// Attach event listeners for editing mode
 						TaskCardRenderer.attachInputListeners(
 							cardElement,
 							noteInstance,
-							cardElement._abortController
+							controller
 						);
 						TaskCardRenderer.attachCalendarListeners(
 							cardElement,
 							noteInstance,
-							cardElement._abortController
+							controller
 						);
 						TaskCardRenderer.attachThreeDotMenuListeners(
 							cardElement,
 							noteInstance,
-							cardElement._abortController
+							controller
 						);
 						TaskCardRenderer.attachDestroyListeners(
 							cardElement,
 							noteInstance,
-							cardElement._abortController
+							controller
 						);
-						TaskCardRenderer.expandCard(
-							cardElement,
-							noteInstance,
-							cardElement._abortController
-						);
+						TaskCardRenderer.expandCard(cardElement, noteInstance, controller);
 					}
 				}
 			}
 		});
 	}
+
+	/**
+	 * Initialize the TaskCardRenderer system
+	 */
 	static init() {
 		this.initializeEventListeners();
 	}
 }
+
+// Initialize the system
 TaskCardRenderer.init();
 
+// Expose DevUtils for development/debugging
 if (typeof window !== 'undefined') {
 	window.DevUtils = DevUtils;
-
 	window.generateSampleTasks = () => DevUtils.generateSampleTasks();
 	window.clearAllTasks = () => DevUtils.clearAllTasks();
 	window.generateBulkTasks = (count) => DevUtils.generateBulkTasks(count);
 }
 
-// trigger render on page load
+// Render cards on page load
 document.addEventListener('DOMContentLoaded', () => {
 	TaskCardRenderer.renderCards('default');
 });
