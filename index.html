@@ -21,60 +21,93 @@
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
 		/>
-		<!-- Flatpickr CSS -->
-		<!-- <link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-		/> -->
-		<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script> -->
 		<title>TaskFlow</title>
 	</head>
-	<body class="bg-main-bg text-body">
-		<main
-			class="h-screen grid grid-cols-2 grid-rows-[60px_50px_1fr] mt-5 ml-5 mr-5"
-		>
-			<div class="col-span-2">
-				<form action="#">
-					<div class="relative">
-						<input
-							type="search"
-							name="card-search"
-							id="card-search"
-							class="appearance-none outline-none rounded-md bg-header-search-bg focus:text-active-menu text-inactive-menu pl-8 pt-2 pb-2 pr-20 text-sm border-gray-600 border-1"
-							placeholder="Search tasks"
-						/>
-						<div
-							class="absolute left-2 top-0 flex items-center justify-center h-full text-base"
-						>
-							<i class="ti ti-search text-grey-200"></i>
-						</div>
+	<body class="bg-main-bg text-body min-h-screen">
+		<div class="flex">
+			<div
+				class="menuOpen absolute p-1.5 hover:bg-generic-btn-hover transition rounded-full z-10 top-5 left-5 cursor-pointer flex justify-center items-center"
+			>
+				<i class="ti ti-menu-2 text-xl"></i>
+			</div>
+			<aside
+				class="fixed bg-sidebar-bg pl-5 pr-5 pt-5 min-50 min-h-screen overflow-y-auto flex-col"
+			>
+				<div class="flex items-center justify-around pb-6">
+					<div
+						class="menuClose w-8 h-8 p-1.5 hover:bg-generic-btn-hover transition rounded-full flex justify-center items-center cursor-pointer"
+					>
+						<i class="ti ti-menu-2 text-xl"></i>
 					</div>
-				</form>
-			</div>
-			<div class="row-start-2 flex items-center">
-				<!-- my tasks heading -->
-				<div>
-					<p class="text-heading text-2xl font-bold">My Tasks</p>
+					<header class="bg-header-bg flex px-5">
+						<div class="flex items-center gap-1">
+							<img
+								src="./assets/images/taskflow-icon.png"
+								alt="TaskFlow Logo"
+								class="h-8 w-8"
+							/>
+							<p>
+								<span class="text-logo text-xl font-bold">TaskFlow</span>
+							</p>
+						</div>
+					</header>
 				</div>
-			</div>
-			<div class="row-start-2 justify-self-end flex gap-3 items-center">
-				<button
-					type="button"
-					class="hover:cursor-pointer bg-btn-bg text-btn-text pt-1.5 pb-1.5 pr-3 pl-3 rounded-md hover:bg-btn-focus font-bold text-sm newTaskButton"
-				>
-					New Task
-				</button>
-				<button
-					type="button"
-					class="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm sortTaskButton"
-				>
-					Sort & Filter
-				</button>
-				<!-- buttons -->
-			</div>
-			<div class="col-span-2 cardDisplayContainer flex flex-col gap-2">
-				<!-- task card -->
-			</div>
-		</main>
+				<div class="categoryContainer">
+					<ul class="categoryList flex flex-col gap-2">
+						<li
+							class="p-2 hover:cursor-pointer hover:bg-generic-btn-hover categoryItem transition duration-200 rounded-md pl-4"
+						>
+							Category
+						</li>
+					</ul>
+				</div>
+			</aside>
+			<main
+				class="w-full h-screen grid grid-cols-2 grid-rows-[60px_50px_1fr] mt-5 ml-80 mr-20"
+			>
+				<div class="col-span-2">
+					<form action="#">
+						<div class="relative">
+							<input
+								type="search"
+								name="card-search"
+								id="card-search"
+								class="appearance-none outline-none rounded-md bg-header-search-bg focus:text-active-menu text-inactive-menu pl-8 pt-2 pb-2 pr-20 text-sm border-gray-600 border-1"
+								placeholder="Search tasks"
+							/>
+							<div
+								class="absolute left-2 top-0 flex items-center justify-center h-full text-base"
+							>
+								<i class="ti ti-search text-grey-200"></i>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="row-start-2 flex items-center">
+					<!-- my tasks heading -->
+					<div>
+						<p class="text-heading text-2xl font-bold">My Tasks</p>
+					</div>
+				</div>
+				<div class="row-start-2 justify-self-end flex gap-3 items-center">
+					<button
+						type="button"
+						class="hover:cursor-pointer bg-btn-bg text-btn-text pt-1.5 pb-1.5 pr-3 pl-3 rounded-md hover:bg-btn-focus font-bold text-sm newTaskButton"
+					>
+						New Task
+					</button>
+					<button
+						type="button"
+						class="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm sortTaskButton"
+					>
+						Sort & Filter
+					</button>
+					<!-- buttons -->
+				</div>
+				<div class="col-span-2 cardDisplayContainer flex flex-col gap-2">
+					<!-- task card -->
+				</div>
+			</main>
+		</div>
 	</body>
 </html>
