@@ -2,6 +2,7 @@ import flatpickr from 'flatpickr';
 import Note from '../models/Note.js';
 import Category from '../models/Category.js';
 import CardTemplateManager from './CardTemplateManager.js';
+import TaskCardRenderer from './TaskCardRenderer.js';
 
 /**
  * CardEventManager - Handles all event listeners for task cards
@@ -92,7 +93,7 @@ export default class CardEventManager {
 					);
 				}
 
-				Note.createNote(noteInstance);
+				Note.createNote(noteInstance, TaskCardRenderer.category);
 			},
 			{ signal: controller.signal }
 		);
@@ -246,7 +247,7 @@ export default class CardEventManager {
 		if (dueTodayButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
 			noteInstance.updateNote({ dueDate: '' });
-			Note.createNote(noteInstance);
+			Note.createNote(noteInstance, TaskCardRenderer.category);
 			return;
 		}
 		const today = new Date();
@@ -264,7 +265,7 @@ export default class CardEventManager {
 		if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
 			noteInstance.updateNote({ dueDate: '' });
-			Note.createNote(noteInstance);
+			Note.createNote(noteInstance, TaskCardRenderer.category);
 			return;
 		}
 		const tomorrow = new Date();
@@ -313,7 +314,7 @@ export default class CardEventManager {
 			onChange: (selectedDates, dateStr) => {
 				noteInstance.updateNote({ dueDate: dateStr });
 				dueCustomDateButton.textContent = dateStr;
-				Note.createNote(noteInstance);
+				Note.createNote(noteInstance, TaskCardRenderer.category);
 			},
 		});
 		fp.open();
@@ -328,7 +329,7 @@ export default class CardEventManager {
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
-			Note.createNote(noteInstance);
+			Note.createNote(noteInstance, TaskCardRenderer.category);
 		}
 	}
 }

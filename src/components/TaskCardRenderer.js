@@ -4,12 +4,14 @@ import CardEventManager from './CardEventManager.js';
 
 // utility for random notes generation
 import DevUtils from '../utils/devUtils.js';
+import Category from '../models/Category.js';
 
 /**
  * TaskCardRenderer - Main orchestrator for task card functionality
  * This class coordinates between CardManager and CardEventManager
  */
 export default class TaskCardRenderer {
+	static category = 'default';
 	/**
 	 * Create a new editable task card
 	 */
@@ -88,7 +90,7 @@ export default class TaskCardRenderer {
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
-			Note.createNote(noteInstance);
+			Note.createNote(noteInstance, this.category);
 		}
 	}
 
@@ -102,8 +104,8 @@ export default class TaskCardRenderer {
 	/**
 	 * Render all cards for a category
 	 */
-	static renderCards(categoryName) {
-		return CardManager.renderCards(categoryName);
+	static renderCards() {
+		return CardManager.renderCards(this.category);
 	}
 
 	/**
@@ -224,13 +226,16 @@ export default class TaskCardRenderer {
 	/**
 	 * Initialize the TaskCardRenderer system
 	 */
-	static init() {
+	static init(categoryName) {
+		this.category = categoryName;
+		Category.categoryExists(categoryName) ||
+			Category.createCategory(categoryName);
+		this.renderCards();
 		this.initializeEventListeners();
 	}
 }
 
 // Initialize the system
-TaskCardRenderer.init();
 
 // Expose DevUtils for development/debugging
 if (typeof window !== 'undefined') {
@@ -241,6 +246,6 @@ if (typeof window !== 'undefined') {
 }
 
 // Render cards on page load
-document.addEventListener('DOMContentLoaded', () => {
-	TaskCardRenderer.renderCards('default');
-});
+// document.addEventListener('DOMContentLoaded', () => {
+// 	TaskCardRenderer.renderCards('default');
+// });
