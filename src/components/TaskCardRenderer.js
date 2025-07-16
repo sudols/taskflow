@@ -141,96 +141,113 @@ export default class TaskCardRenderer {
 	 * Initialize global event listeners for the task card system
 	 */
 	static initializeEventListeners() {
-		document.addEventListener('click', (event) => {
-			// Handle new task button clicks
-			if (event.target.classList.contains('newTaskButton')) {
-				const result = TaskCardRenderer.createNewCardTemplate();
-				if (!result) return;
+		document.addEventListener(
+			'click',
+			(event) => {
+				// Handle new task button clicks
+				if (event.target.classList.contains('newTaskButton')) {
+					const result = TaskCardRenderer.createNewCardTemplate();
+					if (!result) return;
 
-				const { cardElement, noteInstance, controller } = result;
+					const { cardElement, noteInstance, controller } = result;
 
-				// Attach all necessary event listeners
-				TaskCardRenderer.attachInputListeners(
-					cardElement,
-					noteInstance,
-					controller
-				);
-				TaskCardRenderer.attachCalendarListeners(
-					cardElement,
-					noteInstance,
-					controller
-				);
-				TaskCardRenderer.attachRemoveNewCardTemplate(
-					cardElement,
-					noteInstance,
-					controller
-				);
-				TaskCardRenderer.attachThreeDotMenuListeners(
-					cardElement,
-					noteInstance,
-					controller
-				);
-				TaskCardRenderer.attachPushToRenderContainerListeners(
-					cardElement,
-					noteInstance,
-					controller
-				);
-			}
-
-			// Handle existing task card clicks
-			if (event.target.closest('.taskCard')) {
-				const cardElement = event.target.closest('.taskCard');
-				const noteId = cardElement.dataset.noteId;
-
-				// Cleanup existing controller
-				if (cardElement._abortController) {
-					cardElement._abortController.abort();
-					delete cardElement._abortController;
+					// Attach all necessary event listeners
+					TaskCardRenderer.attachInputListeners(
+						cardElement,
+						noteInstance,
+						controller
+					);
+					TaskCardRenderer.attachCalendarListeners(
+						cardElement,
+						noteInstance,
+						controller
+					);
+					TaskCardRenderer.attachRemoveNewCardTemplate(
+						cardElement,
+						noteInstance,
+						controller
+					);
+					TaskCardRenderer.attachThreeDotMenuListeners(
+						cardElement,
+						noteInstance,
+						controller
+					);
+					TaskCardRenderer.attachPushToRenderContainerListeners(
+						cardElement,
+						noteInstance,
+						controller
+					);
 				}
 
-				// Create new controller
-				const controller = new AbortController();
-				cardElement._abortController = controller;
+				// Handle existing task card clicks
+				if (event.target.closest('.taskCard')) {
+					const cardElement = event.target.closest('.taskCard');
+					const noteId = cardElement.dataset.noteId;
 
-				if (noteId) {
-					const noteInstance = Note.getNoteData(noteId);
-					if (noteInstance) {
-						// Attach event listeners for editing mode
-						TaskCardRenderer.attachInputListeners(
-							cardElement,
-							noteInstance,
-							controller
-						);
-						TaskCardRenderer.attachCalendarListeners(
-							cardElement,
-							noteInstance,
-							controller
-						);
-						TaskCardRenderer.attachThreeDotMenuListeners(
-							cardElement,
-							noteInstance,
-							controller
-						);
-						TaskCardRenderer.attachDestroyListeners(
-							cardElement,
-							noteInstance,
-							controller
-						);
-						TaskCardRenderer.expandCard(cardElement, noteInstance, controller);
+					// Cleanup existing controller
+					if (cardElement._abortController) {
+						cardElement._abortController.abort();
+						delete cardElement._abortController;
+					}
+
+					// Create new controller
+					const controller = new AbortController();
+					cardElement._abortController = controller;
+
+					if (noteId) {
+						const noteInstance = Note.getNoteData(noteId);
+						if (noteInstance) {
+							// Attach event listeners for editing mode
+							TaskCardRenderer.attachInputListeners(
+								cardElement,
+								noteInstance,
+								controller
+							);
+							TaskCardRenderer.attachCalendarListeners(
+								cardElement,
+								noteInstance,
+								controller
+							);
+							TaskCardRenderer.attachThreeDotMenuListeners(
+								cardElement,
+								noteInstance,
+								controller
+							);
+							TaskCardRenderer.attachDestroyListeners(
+								cardElement,
+								noteInstance,
+								controller
+							);
+							TaskCardRenderer.expandCard(
+								cardElement,
+								noteInstance,
+								controller
+							);
+						}
 					}
 				}
-			}
-		});
+			},
+			{ signal: this.globalController.signal }
+		);
 	}
 
 	/**
 	 * Initialize the TaskCardRenderer system
 	 */
+	static globalController = new AbortController();
 	static init(categoryName) {
 		this.category = categoryName;
 		Category.categoryExists(categoryName) ||
 			Category.createCategory(categoryName);
 		this.renderCards();
+		if (this.globalController) {
+			console.log('before', this.globalController.signal);
+			this.globalController.abort();
+			console.log('after', this.globalController.signal);
+			delete this.globalController;
+		}
+		this.globalController = new AbortController();
+		console.log('new', this.globalController.signal);
 		this.initializeEventListeners();
 	}
 }
