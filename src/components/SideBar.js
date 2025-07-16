@@ -60,7 +60,6 @@ export default class Sidebar {
 				if (categoryItem) {
 					const categoryName = categoryItem.textContent.trim();
 					this.selectedCategory(categoryName);
-					// TaskCardRenderer.renderCards(categoryName);
 					TaskCardRenderer.init(categoryName);
 				}
 			});
@@ -82,15 +81,9 @@ export default class Sidebar {
 		this.toggleSideBarListener();
 		this.renderCategories();
 		this.changeCategoryListener();
-		// document.addEventListener('DOMContentLoaded', () => {
-		// 	this.selectedCategory('default');
-		// 	TaskCardRenderer.renderCards('default');
-		// });
 	}
 
 	static init() {
 		this.initEventListeners();
 	}
 }
-
-Sidebar.init();
