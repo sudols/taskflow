@@ -47,7 +47,7 @@ export default class CardEventManager {
 		const addFocusAndUpdateInstance = (button, formattedDate) => {
 			button.classList.remove('border-transparent');
 			button.classList.add('bg-generic-btn-focus', 'border-gray-500');
-			noteInstance.updateNote({ dueDate: formattedDate });
+			noteInstance.update({ dueDate: formattedDate });
 		};
 
 		if (!dueDateContainer) return;
@@ -110,10 +110,10 @@ export default class CardEventManager {
 
 		const eventHandler = (event) => {
 			if (event.target === titleInput) {
-				noteInstance.updateNote({ title: titleInput.value });
+				noteInstance.update({ title: titleInput.value });
 				this._saveCardData(cardElement, noteInstance);
 			} else if (event.target === descriptionInput) {
-				noteInstance.updateNote({ description: descriptionInput.value });
+				noteInstance.update({ description: descriptionInput.value });
 				this._saveCardData(cardElement, noteInstance);
 			}
 		};
@@ -243,7 +243,7 @@ export default class CardEventManager {
 	) {
 		if (dueTodayButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
-			noteInstance.updateNote({ dueDate: '' });
+			noteInstance.update({ dueDate: '' });
 			Note.create(noteInstance, TaskCardRenderer.category);
 			return;
 		}
@@ -261,7 +261,7 @@ export default class CardEventManager {
 	) {
 		if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
-			noteInstance.updateNote({ dueDate: '' });
+			noteInstance.update({ dueDate: '' });
 			Note.create(noteInstance, TaskCardRenderer.category);
 			return;
 		}
@@ -309,7 +309,7 @@ export default class CardEventManager {
 		const fp = flatpickr(dateInput, {
 			dateFormat: 'Y-m-d',
 			onChange: (selectedDates, dateStr) => {
-				noteInstance.updateNote({ dueDate: dateStr });
+				noteInstance.update({ dueDate: dateStr });
 				dueCustomDateButton.textContent = dateStr;
 				Note.create(noteInstance, TaskCardRenderer.category);
 			},
@@ -322,7 +322,7 @@ export default class CardEventManager {
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
 
 		if (titleInput.value || descriptionInput.value) {
-			noteInstance.updateNote({
+			noteInstance.update({
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});

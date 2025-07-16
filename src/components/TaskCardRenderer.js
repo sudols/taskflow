@@ -86,7 +86,7 @@ export default class TaskCardRenderer {
 		const descriptionInput = cardElement.querySelector('#newTaskDescription');
 
 		if (titleInput.value || descriptionInput.value) {
-			noteInstance.updateNote({
+			noteInstance.update({
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
