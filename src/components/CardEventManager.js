@@ -93,7 +93,7 @@ export default class CardEventManager {
 					);
 				}
 
-				Note.createNote(noteInstance, TaskCardRenderer.category);
+				Note.create(noteInstance, TaskCardRenderer.category);
 			},
 			{ signal: controller.signal }
 		);
@@ -160,8 +160,8 @@ export default class CardEventManager {
 				if (!titleInput.value.trim() && !descriptionInput.value.trim()) {
 					controller.abort();
 					cardElement.remove();
-					if (Note.getNoteData(noteInstance.id)) {
-						Note.deleteNote(noteInstance.id);
+					if (Note.get(noteInstance.id)) {
+						Note.delete(noteInstance.id);
 						Category.removeNote(noteInstance.id, 'default');
 					}
 				}
@@ -181,10 +181,7 @@ export default class CardEventManager {
 		const container = document.querySelector('.cardDisplayContainer');
 
 		function transitionToDisplayMode(event) {
-			if (
-				!cardElement.contains(event.target) &&
-				Note.getNoteData(noteInstance.id)
-			) {
+			if (!cardElement.contains(event.target) && Note.get(noteInstance.id)) {
 				cardElement.remove();
 				if (cardElement._abortController) {
 					cardElement._abortController.abort();
@@ -247,7 +244,7 @@ export default class CardEventManager {
 		if (dueTodayButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
 			noteInstance.updateNote({ dueDate: '' });
-			Note.createNote(noteInstance, TaskCardRenderer.category);
+			Note.create(noteInstance, TaskCardRenderer.category);
 			return;
 		}
 		const today = new Date();
@@ -265,7 +262,7 @@ export default class CardEventManager {
 		if (dueTomorrowButton.classList.contains('bg-generic-btn-focus')) {
 			clearAllSelectedStates();
 			noteInstance.updateNote({ dueDate: '' });
-			Note.createNote(noteInstance, TaskCardRenderer.category);
+			Note.create(noteInstance, TaskCardRenderer.category);
 			return;
 		}
 		const tomorrow = new Date();
@@ -314,7 +311,7 @@ export default class CardEventManager {
 			onChange: (selectedDates, dateStr) => {
 				noteInstance.updateNote({ dueDate: dateStr });
 				dueCustomDateButton.textContent = dateStr;
-				Note.createNote(noteInstance, TaskCardRenderer.category);
+				Note.create(noteInstance, TaskCardRenderer.category);
 			},
 		});
 		fp.open();
@@ -329,7 +326,7 @@ export default class CardEventManager {
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
-			Note.createNote(noteInstance, TaskCardRenderer.category);
+			Note.create(noteInstance, TaskCardRenderer.category);
 		}
 	}
 }

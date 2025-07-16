@@ -93,7 +93,7 @@ export default class CardManager {
 		notes.forEach((noteId) => {
 			if (noteId === 'not found') return; // Skip invalid entries
 
-			const noteData = Note.getNoteData(noteId);
+			const noteData = Note.get(noteId);
 			if (noteData) {
 				const cardHTML = this.createDisplayCard(noteData);
 				if (cardHTML) {
@@ -108,7 +108,7 @@ export default class CardManager {
 	 */
 	static updateCard(noteId) {
 		const cardElement = document.querySelector(`[data-note-id="${noteId}"]`);
-		const noteData = Note.getNoteData(noteId);
+		const noteData = Note.get(noteId);
 
 		if (!cardElement || !noteData) {
 			console.error(`Card or note data not found for ID: ${noteId}`);
@@ -151,7 +151,7 @@ export default class CardManager {
 		}
 
 		// Remove from storage
-		Note.deleteNote(noteId);
+		Note.delete(noteId);
 		Category.removeNote(noteId, categoryName);
 	}
 

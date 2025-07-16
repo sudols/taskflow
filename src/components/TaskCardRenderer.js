@@ -90,7 +90,7 @@ export default class TaskCardRenderer {
 				title: titleInput.value,
 				description: descriptionInput.value,
 			});
-			Note.createNote(noteInstance, this.category);
+			Note.create(noteInstance, this.category);
 		}
 	}
 
@@ -195,7 +195,7 @@ export default class TaskCardRenderer {
 					cardElement._abortController = controller;
 
 					if (noteId) {
-						const noteInstance = Note.getNoteData(noteId);
+						const noteInstance = Note.get(noteId);
 						if (noteInstance) {
 							// Attach event listeners for editing mode
 							TaskCardRenderer.attachInputListeners(

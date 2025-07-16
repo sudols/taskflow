@@ -22,7 +22,7 @@ export default class Note {
 	// 	localStorage.setItem(`note_${note.id}`, JSON.stringify(note));
 	// }
 
-	updateNote(updatesObj) {
+	update(updatesObj) {
 		const allowedFields = [
 			'title',
 			'description',
@@ -42,14 +42,14 @@ export default class Note {
 		this.modified = new Date().toISOString();
 	}
 
-	toggleCompleted() {
+	toggle() {
 		this.completed = !this.completed;
 		this.modified = new Date().toISOString();
 		localStorage.setItem(this.id, JSON.stringify(this));
 		console.log('Note complete toggled:', this);
 	}
 
-	static createNote(noteInstance, categoryName = 'default') {
+	static create(noteInstance, categoryName = 'default') {
 		if (noteInstance instanceof Note) {
 			let noteObj = {
 				id: noteInstance.id,
@@ -69,7 +69,7 @@ export default class Note {
 		return noteInstance;
 	}
 
-	static deleteNote(noteID) {
+	static delete(noteID) {
 		const noteData = localStorage.getItem(noteID);
 		if (noteData) {
 			localStorage.removeItem(noteID);
@@ -79,7 +79,7 @@ export default class Note {
 		}
 	}
 
-	static getNoteData(noteID) {
+	static get(noteID) {
 		const noteData = localStorage.getItem(noteID);
 		if (noteData) {
 			return new Note(JSON.parse(noteData));
