@@ -253,12 +253,10 @@ export default class TaskCardRenderer {
 // Expose DevUtils for development/debugging
 if (typeof window !== 'undefined') {
 	window.DevUtils = DevUtils;
-	window.generateSampleTasks = () => DevUtils.generateSampleTasks();
-	window.clearAllTasks = () => DevUtils.clearAllTasks();
-	window.generateBulkTasks = (count) => DevUtils.generateBulkTasks(count);
-}
 
-// Render cards on page load
-// document.addEventListener('DOMContentLoaded', () => {
-// 	TaskCardRenderer.renderCards('default');
-// });
+	// New primary functions
+	window.getCategories = () => DevUtils.getCategories();
+	window.deleteAllCategories = () => DevUtils.deleteAllCategories();
+	window.generateRandomTasks = (categoryName, count) =>
+		DevUtils.generateRandomTasks(categoryName, count);
+}

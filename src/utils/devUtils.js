@@ -4,118 +4,28 @@ import Category from '../models/Category.js';
 /**
  * Development utility for generating sample task data
  */
-// console.log('💡 TaskCardRenderer and DevUtils loaded globally');
-// console.log('🎯 Available functions:');
-// console.log('   - generateSampleTasks() - Generate 6 sample tasks');
-// console.log('   - generateBulkTasks(count) - Generate bulk tasks');
-// console.log('   - clearAllTasks() - Clear all existing tasks');
-// console.log('   - DevUtils.* / TaskCardRenderer.* - Access all methods');
 export default class DevUtils {
-	static generateSampleTasks() {
-		console.log('🌱 Generating sample tasks...');
-
-		// Clear existing data first
-		this.clearAllTasks();
-
-		// Sample task data
-		const sampleTasks = [
-			{
-				title: 'Complete project documentation',
-				description:
-					'Write comprehensive documentation for the task management app including API docs and user guide',
-				dueDate: this.getFormattedDate(2), // Due in 2 days
-				priority: 'high',
-				completed: false,
-			},
-			{
-				title: 'Review pull requests',
-				description:
-					'Go through pending PRs and provide feedback to team members',
-				dueDate: this.getFormattedDate(0), // Due today
-				priority: 'normal',
-				completed: false,
-			},
-			{
-				title: 'Buy groceries',
-				description: 'Milk, bread, eggs, vegetables, and fruits for the week',
-				dueDate: this.getFormattedDate(1), // Due tomorrow
-				priority: 'normal',
-				completed: false,
-			},
-			{
-				title: 'Schedule team meeting',
-				description: 'Organize weekly sync meeting with development team',
-				dueDate: '', // No due date
-				priority: 'low',
-				completed: true,
-			},
-			{
-				title: 'Fix navigation bug',
-				description:
-					'Resolve the issue where menu items are not highlighting correctly on mobile devices',
-				dueDate: this.getFormattedDate(3), // Due in 3 days
-				priority: 'high',
-				completed: false,
-			},
-			{
-				title: 'Plan weekend trip',
-				description:
-					'Research destinations, book accommodation, and create itinerary for weekend getaway',
-				dueDate: this.getFormattedDate(7), // Due in a week
-				priority: 'low',
-				completed: false,
-			},
-		];
-
-		// Create category index
-		let categoryIndex = { default: [] };
-
-		// Generate tasks
-		sampleTasks.forEach((taskData, index) => {
-			const noteId = crypto.randomUUID();
-			const noteObj = {
-				id: noteId,
-				title: taskData.title,
-				description: taskData.description,
-				dueDate: taskData.dueDate,
-				priority: taskData.priority,
-				created: new Date(Date.now() - index * 60 * 60 * 1000).toISOString(),
-				modified: new Date().toISOString(),
-				completed: taskData.completed,
-			};
-
-			// Store note in localStorage
-			localStorage.setItem(noteId, JSON.stringify(noteObj));
-
-			// Add to default category
-			categoryIndex.default.push(noteId);
-
-			console.log(`✅ Created task: "${taskData.title}"`);
-		});
-
-		// Save category index
-		localStorage.setItem('categories_index', JSON.stringify(categoryIndex));
-
-		console.log(
-			`🎉 Successfully generated ${sampleTasks.length} sample tasks!`
-		);
-		console.log('🔄 Re-rendering cards...');
-
-		// Re-render the cards if TaskCardRenderer is available
-		if (typeof window !== 'undefined' && window.TaskCardRenderer) {
-			window.TaskCardRenderer.renderCards('default');
-		}
-
-		return sampleTasks.length;
+	/**
+	 * Get all existing categories
+	 * @returns {string[]} Array of category names
+	 */
+	static getCategories() {
+		const categories = Category.getAll();
+		console.log('📂 Available categories:', categories);
+		return categories;
 	}
 
-	static clearAllTasks() {
-		console.log('🧹 Clearing all tasks...');
+	/**
+	 * Delete all categories and their associated notes
+	 * @returns {number} Number of notes deleted
+	 */
+	static deleteAllCategories() {
+		console.log('🧹 Clearing all categories and notes...');
 
-		const categories =
-			JSON.parse(localStorage.getItem('categories_index')) || {};
+		const categories = Category.getStoredCategories();
 		let deletedCount = 0;
 
+		// Delete all notes from localStorage
 		Object.values(categories).forEach((noteIds) => {
 			if (Array.isArray(noteIds)) {
 				noteIds.forEach((noteId) => {
@@ -127,9 +37,10 @@ export default class DevUtils {
 			}
 		});
 
+		// Clear categories index
 		localStorage.removeItem('categories_index');
 
-		console.log(`🗑️ Deleted ${deletedCount} tasks`);
+		console.log(`🗑️ Deleted ${deletedCount} notes and all categories`);
 
 		// Clear the UI if container exists
 		const container = document.querySelector('.cardDisplayContainer');
@@ -140,99 +51,169 @@ export default class DevUtils {
 		return deletedCount;
 	}
 
+	/**
+	 * Generate random tasks in a specific category with varied content
+	 * @param {string} categoryName - Name of the category to create tasks in
+	 * @param {number} count - Number of tasks to generate (default: 10)
+	 * @returns {number} Number of tasks created
+	 */
+	static generateRandomTasks(categoryName = 'default', count = 10) {
+		console.log(
+			`🌱 Generating ${count} random tasks in category "${categoryName}"...`
+		);
+
+		// Ensure category exists
+		if (!Category.exists(categoryName)) {
+			Category.create(categoryName);
+		}
+
+		const taskTitles = [
+			'Complete project documentation',
+			'Review pull requests',
+			'Buy groceries',
+			'Schedule team meeting',
+			'Fix navigation bug',
+			'Plan weekend trip',
+			'Call dentist appointment',
+			'Update resume',
+			'Learn new framework',
+			'Organize workspace',
+			'Prepare presentation',
+			'Research competitors',
+			'Write blog post',
+			'Clean house',
+			'Exercise routine',
+			'Book vacation',
+			'Pay monthly bills',
+			'Backup important files',
+			'Update portfolio',
+			'Read technical book',
+		];
+
+		const descriptions = [
+			'Write comprehensive documentation for the task management app including API docs and user guide',
+			'Go through pending PRs and provide feedback to team members',
+			'Milk, bread, eggs, vegetables, and fruits for the week',
+			'Organize weekly sync meeting with development team',
+			'Resolve the issue where menu items are not highlighting correctly on mobile devices',
+			'Research destinations, book accommodation, and create itinerary for weekend getaway',
+			'Schedule regular dental checkup and cleaning',
+			'Update work experience, skills, and education sections',
+			'Explore React 18 features and best practices',
+			'Declutter desk, organize cables, and clean monitor',
+			'Create slides for quarterly review meeting',
+			'Analyze market trends and competitor strategies',
+			'Write about recent development experiences and learnings',
+			'Deep clean kitchen, bathroom, and living areas',
+			'Plan weekly workout schedule and meal prep',
+			'Compare prices and book summer vacation package',
+			'Review and pay utilities, rent, and subscription services',
+			'Create backup of projects, photos, and important documents',
+			'Add recent projects and update design showcase',
+			'Read "Clean Code" and take implementation notes',
+		];
+
+		const priorities = ['low', 'normal', 'high'];
+
+		// Task composition patterns (mix of content)
+		const patterns = [
+			{ hasTitle: true, hasDescription: false, hasDate: false }, // Just title
+			{ hasTitle: true, hasDescription: false, hasDate: true }, // Title + date
+			{ hasTitle: true, hasDescription: true, hasDate: false }, // Title + description
+			{ hasTitle: true, hasDescription: true, hasDate: true }, // Title + description + date
+			{ hasTitle: false, hasDescription: true, hasDate: false }, // Just description
+			{ hasTitle: false, hasDescription: true, hasDate: true }, // Description + date
+		];
+
+		for (let i = 0; i < count; i++) {
+			const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+			const priority =
+				priorities[Math.floor(Math.random() * priorities.length)];
+			const isCompleted = Math.random() > 0.85; // 15% chance of being completed
+
+			// Generate content based on pattern
+			const titleIndex = Math.floor(Math.random() * taskTitles.length);
+			const descIndex = Math.floor(Math.random() * descriptions.length);
+
+			const noteId = crypto.randomUUID();
+			const noteObj = {
+				id: noteId,
+				title: pattern.hasTitle ? taskTitles[titleIndex] : '',
+				description: pattern.hasDescription ? descriptions[descIndex] : '',
+				dueDate: pattern.hasDate
+					? this.getFormattedDate(Math.floor(Math.random() * 14))
+					: '', // Random date within 2 weeks
+				priority: priority,
+				created: new Date(Date.now() - i * 30 * 60 * 1000).toISOString(), // Stagger creation times
+				modified: new Date().toISOString(),
+				completed: isCompleted,
+			};
+
+			// Create note instance and save to category
+			const note = new Note(noteObj);
+			Note.create(note, categoryName);
+
+			const contentInfo = [];
+			if (pattern.hasTitle) contentInfo.push('title');
+			if (pattern.hasDescription) contentInfo.push('description');
+			if (pattern.hasDate) contentInfo.push('date');
+
+			console.log(`✅ Created task with: ${contentInfo.join(' + ')}`);
+		}
+
+		console.log(
+			`🎉 Successfully generated ${count} random tasks in "${categoryName}"!`
+		);
+
+		// Re-render the cards if TaskCardRenderer is available
+		if (typeof window !== 'undefined' && window.TaskCardRenderer) {
+			window.TaskCardRenderer.renderCards(categoryName);
+		}
+
+		return count;
+	}
+
+	/**
+	 * Helper method to get formatted date with offset
+	 * @param {number} daysOffset - Number of days to offset from today
+	 * @returns {string} Formatted date string (YYYY-MM-DD)
+	 */
 	static getFormattedDate(daysOffset = 0) {
 		const date = new Date();
 		date.setDate(date.getDate() + daysOffset);
 		return date.toISOString().split('T')[0];
 	}
 
+	/**
+	 * Legacy method for backward compatibility
+	 * @deprecated Use generateRandomTasks('default', count) instead
+	 */
+	static generateSampleTasks() {
+		console.log(
+			'⚠️ generateSampleTasks() is deprecated. Use generateRandomTasks() instead.'
+		);
+		return this.generateRandomTasks('default', 6);
+	}
+
+	/**
+	 * Legacy method for backward compatibility
+	 * @deprecated Use generateRandomTasks('default', count) instead
+	 */
 	static generateBulkTasks(count = 20) {
-		console.log(`🔄 Generating ${count} bulk tasks for testing...`);
+		console.log(
+			'⚠️ generateBulkTasks() is deprecated. Use generateRandomTasks() instead.'
+		);
+		return this.generateRandomTasks('default', count);
+	}
 
-		const taskPrefixes = [
-			'Review',
-			'Update',
-			'Fix',
-			'Implement',
-			'Design',
-			'Test',
-			'Deploy',
-			'Refactor',
-			'Optimize',
-			'Debug',
-			'Create',
-			'Plan',
-			'Research',
-			'Analyze',
-		];
-
-		const taskSubjects = [
-			'user interface',
-			'database schema',
-			'API endpoints',
-			'test cases',
-			'documentation',
-			'deployment pipeline',
-			'error handling',
-			'performance',
-			'security measures',
-			'user authentication',
-			'data validation',
-			'logging system',
-			'monitoring tools',
-			'backup strategy',
-			'code quality',
-			'accessibility features',
-		];
-
-		const priorities = ['low', 'normal', 'high'];
-
-		// Get existing category index or create new one
-		let categoryIndex = JSON.parse(
-			localStorage.getItem('categories_index')
-		) || { default: [] };
-
-		for (let i = 0; i < count; i++) {
-			const prefix =
-				taskPrefixes[Math.floor(Math.random() * taskPrefixes.length)];
-			const subject =
-				taskSubjects[Math.floor(Math.random() * taskSubjects.length)];
-			const priority =
-				priorities[Math.floor(Math.random() * priorities.length)];
-			const hasDueDate = Math.random() > 0.3; // 70% chance of having a due date
-			const isCompleted = Math.random() > 0.8; // 20% chance of being completed
-
-			const noteId = crypto.randomUUID();
-			const noteObj = {
-				id: noteId,
-				title: `${prefix} ${subject}`,
-				description: `Detailed task to ${prefix.toLowerCase()} ${subject} as part of the development process`,
-				dueDate: hasDueDate
-					? this.getFormattedDate(Math.floor(Math.random() * 14))
-					: '', // Random date within 2 weeks
-				priority: priority,
-				created: new Date(Date.now() - i * 30 * 60 * 1000).toISOString(), // Stagger creation times by 30 min
-				modified: new Date().toISOString(),
-				completed: isCompleted,
-			};
-
-			// Store note in localStorage
-			localStorage.setItem(noteId, JSON.stringify(noteObj));
-
-			// Add to default category
-			categoryIndex.default.push(noteId);
-		}
-
-		// Save category index
-		localStorage.setItem('categories_index', JSON.stringify(categoryIndex));
-
-		console.log(`✨ Generated ${count} additional bulk tasks!`);
-
-		// Re-render the cards if TaskCardRenderer is available
-		if (typeof window !== 'undefined' && window.TaskCardRenderer) {
-			window.TaskCardRenderer.renderCards('default');
-		}
-
-		return count;
+	/**
+	 * Legacy method for backward compatibility
+	 * @deprecated Use deleteAllCategories() instead
+	 */
+	static clearAllTasks() {
+		console.log(
+			'⚠️ clearAllTasks() is deprecated. Use deleteAllCategories() instead.'
+		);
+		return this.deleteAllCategories();
 	}
 }
