@@ -14,18 +14,7 @@ export default class Sidebar {
 		`;
 	}
 
-	static toggleSideBarListener() {
-		document.addEventListener('click', (event) => {
-			if (event.target.closest('.menuOpen')) {
-				this._toggleSidebar();
-			}
-			if (event.target.closest('.menuClose')) {
-				this._toggleSidebar();
-			}
-		});
-	}
-
-	static _toggleSidebar() {
+	static toggleSidebar() {
 		const sidebar = document.querySelector('.sidebar');
 		const mainDisplay = document.querySelector('.mainDisplay');
 		if (sidebar) {
@@ -42,7 +31,7 @@ export default class Sidebar {
 	}
 
 	static renderCategories() {
-		const categories = Category.getAllCategories();
+		const categories = Category.getAll();
 		const categoryContainer = document.querySelector('.categoryList');
 		if (categoryContainer) {
 			categoryContainer.innerHTML = '';
@@ -123,7 +112,8 @@ export default class Sidebar {
 						event.target !== newCategoryInput &&
 						newCategoryInput.value.trim() !== ''
 					) {
-						Category.createCategory(newCategoryInput.value.trim());
+						// TODO: Handle case if create is trigger but category already exists
+						Category.create(newCategoryInput.value.trim());
 
 						newCategoryLi.remove();
 						controller.abort();
@@ -151,7 +141,7 @@ export default class Sidebar {
 				event.target.closest('.menuOpen') ||
 				event.target.closest('.menuClose')
 			) {
-				this._toggleSidebar();
+				this.toggleSidebar();
 			}
 
 			this.changeCategoryListener(event);

@@ -78,7 +78,7 @@ export default class CardManager {
 	 * Render all cards for a specific category
 	 */
 	static renderCards(categoryName) {
-		const notes = Category.getCategoryNotes(categoryName);
+		const notes = Category.getNotes(categoryName);
 		const container = document.querySelector('.cardDisplayContainer');
 
 		if (!container) {
@@ -152,7 +152,7 @@ export default class CardManager {
 
 		// Remove from storage
 		Note.deleteNote(noteId);
-		Category.removeNoteFromCategory(noteId, categoryName);
+		Category.removeNote(noteId, categoryName);
 	}
 
 	/**

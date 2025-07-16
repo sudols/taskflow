@@ -162,7 +162,7 @@ export default class CardEventManager {
 					cardElement.remove();
 					if (Note.getNoteData(noteInstance.id)) {
 						Note.deleteNote(noteInstance.id);
-						Category.removeNoteFromCategory(noteInstance.id, 'default');
+						Category.removeNote(noteInstance.id, 'default');
 					}
 				}
 			}

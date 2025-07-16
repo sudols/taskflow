@@ -63,8 +63,8 @@ export default class Note {
 			};
 			localStorage.setItem(noteInstance.id, JSON.stringify(noteObj));
 		}
-		if (Category.checkNoteInCategory(categoryName, noteInstance.id) === false) {
-			Category.addNoteToCategory(categoryName, noteInstance.id);
+		if (Category.hasNote(categoryName, noteInstance.id) === false) {
+			Category.addNote(categoryName, noteInstance.id);
 		}
 		return noteInstance;
 	}

@@ -237,8 +237,7 @@ export default class TaskCardRenderer {
 	static globalController = new AbortController();
 	static init(categoryName) {
 		this.category = categoryName;
-		Category.categoryExists(categoryName) ||
-			Category.createCategory(categoryName);
+		Category.exists(categoryName) || Category.create(categoryName);
 		this.renderCards();
 		if (this.globalController) {
 			this.globalController.abort();

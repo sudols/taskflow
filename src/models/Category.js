@@ -10,11 +10,11 @@ export default class Category {
 		localStorage.setItem('categories_index', JSON.stringify(categories));
 	}
 
-	static getCategoryNotes(categoryName) {
+	static getNotes(categoryName) {
 		return Category.getStoredCategories()[categoryName] || ['not found'];
 	}
-	static removeNoteFromCategory(noteID, categoryName) {
-		let currentCategoryNotes = Category.getCategoryNotes(categoryName);
+	static removeNote(noteID, categoryName) {
+		let currentCategoryNotes = Category.getNotes(categoryName);
 		if (currentCategoryNotes.includes(noteID)) {
 			currentCategoryNotes = currentCategoryNotes.filter((id) => id !== noteID);
 
@@ -25,7 +25,7 @@ export default class Category {
 		}
 	}
 
-	static deleteCategory(categoryName) {
+	static delete(categoryName) {
 		const storedCategories = Category.getStoredCategories();
 
 		if (storedCategories[categoryName]) {
@@ -35,7 +35,7 @@ export default class Category {
 			console.error(`Category "${categoryName}" does not exist.`);
 		}
 	}
-	static createCategory(categoryName) {
+	static create(categoryName) {
 		const storedCategories = Category.getStoredCategories();
 
 		if (!storedCategories[categoryName]) {
@@ -45,15 +45,15 @@ export default class Category {
 			console.error(`Category "${categoryName}" already exists.`);
 		}
 	}
-	static getAllCategories() {
+	static getAll() {
 		const storedCategories = Category.getStoredCategories();
 		return Object.keys(storedCategories);
 	}
-	static categoryExists(categoryName) {
+	static exists(categoryName) {
 		const storedCategories = Category.getStoredCategories();
 		return Object.hasOwn(storedCategories, categoryName);
 	}
-	static addNoteToCategory(categoryName = 'default', noteID) {
+	static addNote(categoryName = 'default', noteID) {
 		const storedCategories = Category.getStoredCategories();
 
 		if (storedCategories[categoryName]) {
@@ -65,14 +65,14 @@ export default class Category {
 			console.warn(
 				`Category "${categoryName}" does not exist. Creating it now.`
 			);
-			Category.createCategory(categoryName);
+			Category.create(categoryName);
 			// Get fresh categories after creating new one
 			const updatedCategories = Category.getStoredCategories();
 			updatedCategories[categoryName].push(noteID);
 			Category.saveCategories(updatedCategories);
 		}
 	}
-	static checkNoteInCategory(categoryName, noteID) {
+	static hasNote(categoryName, noteID) {
 		const storedCategories = Category.getStoredCategories();
 		if (storedCategories[categoryName]) {
 			return storedCategories[categoryName].includes(noteID);
