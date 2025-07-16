@@ -241,13 +241,10 @@ export default class TaskCardRenderer {
 			Category.createCategory(categoryName);
 		this.renderCards();
 		if (this.globalController) {
-			console.log('before', this.globalController.signal);
 			this.globalController.abort();
-			console.log('after', this.globalController.signal);
 			delete this.globalController;
 		}
 		this.globalController = new AbortController();
-		console.log('new', this.globalController.signal);
 		this.initializeEventListeners();
 	}
 }
