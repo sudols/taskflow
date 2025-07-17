@@ -14,6 +14,9 @@ module.exports = {
 	devtool: 'inline-source-map',
 	devServer: {
 		static: '../dist',
+		server: 'https',
+		host: 'localhost',
+		port: 8080,
 		hot: true,
 		open: false,
 		watchFiles: [path.resolve(__dirname, '../index.html')],

@@ -1,4 +1,5 @@
 import Category from './Category';
+console.log(typeof crypto.randomUUID);
 
 export default class Note {
 	constructor(noteObj) {

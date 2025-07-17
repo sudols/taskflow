@@ -44,9 +44,9 @@ export default class CardTemplateManager {
 					<div>
 						<p class="text-body text-xs flex items-center gap-2">
 							<span class="dueDateContainer"> 
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition" type="button">Today</button>
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueTomorrow transition" type="button">Tomorrow</button>
-								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button"><i class="ti ti-calendar-event"></i></button>
+								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueToday transition calendarButton" type="button">Today</button>
+								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueTomorrow transition calendarButton" type="button">Tomorrow</button>
+								<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition calendarButton" type="button"><i class="ti ti-calendar-event"></i></button>
 							</span>
 						</p>
 					</div>
@@ -105,7 +105,7 @@ export default class CardTemplateManager {
 						noteInstance.dueDate !== '' ? 'visible' : 'hidden'
 					}">
 						<p class="text-body text-xs flex items-center gap-2 dueDateContainer">
-							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition" type="button">${
+							<button class="cursor-pointer hover:bg-generic-btn-hover rounded-sm p-1 pr-2 pl-2 border border-transparent dueCustomDate transition calendarButton" type="button">${
 								noteInstance.dueDate === ''
 									? '<i class="ti ti-calendar-event"></i>'
 									: noteInstance.dueDate

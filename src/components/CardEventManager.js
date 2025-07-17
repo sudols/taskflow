@@ -11,7 +11,8 @@ export default class CardEventManager {
 	/**
 	 * Attach calendar/date picker event listeners
 	 */
-	static attachCalendarListeners(cardElement, noteInstance, controller) {
+	static handleCalendarClick(cardElement, noteInstance, controller, event) {
+		// TODO: fix flatpickr calendar lingering event listeners after card event listener is aborted
 		const elements = this._getCalendarElements(cardElement);
 		const {
 			dueCustomDateButton,
@@ -19,6 +20,8 @@ export default class CardEventManager {
 			dueTomorrowButton,
 			dueDateContainer,
 		} = elements;
+
+		if (!dueDateContainer) return;
 
 		const allDueButtons = [
 			dueTodayButton,
@@ -50,53 +53,41 @@ export default class CardEventManager {
 			noteInstance.update({ dueDate: formattedDate });
 		};
 
-		if (!dueDateContainer) return;
-
 		// Clear focus when clicking outside date container
-		cardElement.addEventListener(
-			'click',
-			(event) => {
-				if (event.target !== dueDateContainer) {
-					this._clearDateButtonFocus(allDueButtons);
-				}
-			},
-			{ signal: controller.signal }
-		);
+		// document.addEventListener(
+		// 	'click',
+		// 	(event) => {
+		// 		if (event.target !== dueDateContainer) {
+		// 			this._clearDateButtonFocus(allDueButtons);
+		// 		}
+		// 	},
+		// 	{ signal: controller.signal }
+		// );
 
-		// Handle date button clicks
-		dueDateContainer.addEventListener(
-			'click',
-			(event) => {
-				event.preventDefault();
-				event.stopPropagation();
+		if (event.target.classList.contains('dueToday')) {
+			this._handleTodayClick(
+				dueTodayButton,
+				clearAllSelectedStates,
+				addFocusAndUpdateInstance,
+				noteInstance
+			);
+		} else if (event.target.classList.contains('dueTomorrow')) {
+			this._handleTomorrowClick(
+				dueTomorrowButton,
+				clearAllSelectedStates,
+				addFocusAndUpdateInstance,
+				noteInstance
+			);
+		} else if (event.target.closest('.dueCustomDate')) {
+			this._handleCustomDateClick(
+				dueCustomDateButton,
+				cardElement,
+				clearAllSelectedStates,
+				noteInstance
+			);
+		}
 
-				if (event.target.classList.contains('dueToday')) {
-					this._handleTodayClick(
-						dueTodayButton,
-						clearAllSelectedStates,
-						addFocusAndUpdateInstance,
-						noteInstance
-					);
-				} else if (event.target.classList.contains('dueTomorrow')) {
-					this._handleTomorrowClick(
-						dueTomorrowButton,
-						clearAllSelectedStates,
-						addFocusAndUpdateInstance,
-						noteInstance
-					);
-				} else if (event.target.closest('.dueCustomDate')) {
-					this._handleCustomDateClick(
-						dueCustomDateButton,
-						cardElement,
-						clearAllSelectedStates,
-						noteInstance
-					);
-				}
-
-				Note.create(noteInstance, TaskCardRenderer.category);
-			},
-			{ signal: controller.signal }
-		);
+		Note.create(noteInstance, TaskCardRenderer.category);
 	}
 
 	/**

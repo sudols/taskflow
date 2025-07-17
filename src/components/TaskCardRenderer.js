@@ -22,23 +22,31 @@ export default class TaskCardRenderer {
 	/**
 	 * Attach calendar/date picker listeners to a card
 	 */
-	static attachCalendarListeners(cardElement, noteInstance, controller) {
-		return CardEventManager.attachCalendarListeners(
-			cardElement,
-			noteInstance,
-			controller
-		);
+	static handleCalendarClick(cardElement, noteInstance, controller, event) {
+		if (event.target.closest('.calendarButton')) {
+			return CardEventManager.handleCalendarClick(
+				cardElement,
+				noteInstance,
+				controller,
+				event
+			);
+		}
 	}
 
 	/**
 	 * Attach input field listeners to a card
 	 */
-	static attachInputListeners(cardElement, noteInstance, controller) {
-		return CardEventManager.attachInputListeners(
-			cardElement,
-			noteInstance,
-			controller
-		);
+	static handleInputClick(cardElement, noteInstance, controller, event) {
+		if (
+			event.target.closest('#newTaskTitle') ||
+			event.target.closest('#newTaskDescription')
+		) {
+			return CardEventManager.attachInputListeners(
+				cardElement,
+				noteInstance,
+				controller
+			);
+		}
 	}
 
 	/**
@@ -152,12 +160,12 @@ export default class TaskCardRenderer {
 					const { cardElement, noteInstance, controller } = result;
 
 					// Attach all necessary event listeners
-					TaskCardRenderer.attachInputListeners(
+					TaskCardRenderer.handleInputClick(
 						cardElement,
 						noteInstance,
 						controller
 					);
-					TaskCardRenderer.attachCalendarListeners(
+					TaskCardRenderer.handleCalendarClick(
 						cardElement,
 						noteInstance,
 						controller
@@ -198,21 +206,23 @@ export default class TaskCardRenderer {
 						const noteInstance = Note.get(noteId);
 						if (noteInstance) {
 							// Attach event listeners for editing mode
-							TaskCardRenderer.attachInputListeners(
+							TaskCardRenderer.handleInputClick(
 								cardElement,
 								noteInstance,
-								controller
+								controller,
+								event
 							);
-							TaskCardRenderer.attachCalendarListeners(
+							TaskCardRenderer.handleCalendarClick(
 								cardElement,
 								noteInstance,
-								controller
+								controller,
+								event
 							);
-							TaskCardRenderer.attachThreeDotMenuListeners(
-								cardElement,
-								noteInstance,
-								controller
-							);
+							// TaskCardRenderer.attachThreeDotMenuListeners(
+							// 	cardElement,
+							// 	noteInstance,
+							// 	controller
+							// );
 							TaskCardRenderer.attachDestroyListeners(
 								cardElement,
 								noteInstance,
