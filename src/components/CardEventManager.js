@@ -210,7 +210,6 @@ export default class CardEventManager {
 		if (!cardElement) return;
 		const checkbox = cardElement.querySelector('#taskCheckbox');
 		if (checkbox) {
-			// console.log(checkbox);
 			noteInstance.toggle();
 			return;
 		}

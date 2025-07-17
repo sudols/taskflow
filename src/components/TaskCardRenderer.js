@@ -139,14 +139,12 @@ export default class TaskCardRenderer {
 	}
 
 	static handleCheckboxToggle(cardElement, noteInstance, controller, event) {
-		if (event.target.closest('#taskCheckbox')) {
-			CardEventManager.handleCheckboxToggle(
-				cardElement,
-				noteInstance,
-				controller
-			);
-			return true;
-		}
+		CardEventManager.handleCheckboxToggle(
+			cardElement,
+			noteInstance,
+			controller
+		);
+		return true;
 	}
 
 	/**
