@@ -131,6 +131,11 @@ export default class TaskCardRenderer {
 			'click',
 			(event) => {
 				if (!cardElement.contains(event.target)) {
+					if (cardElement._abortController) {
+						cardElement._abortController.abort();
+						delete cardElement._abortController;
+					}
+
 					CardManager.transitionToDisplayMode(cardElement, noteInstance);
 				}
 			},
@@ -248,6 +253,7 @@ export default class TaskCardRenderer {
 								event
 							);
 
+							// TODO: implement two method. one for a new task card three dot that would function like existing one. And second one, that would pop-up when hovering/clicking on a rendered task card.
 							// TaskCardRenderer.attachThreeDotMenuListeners(
 							// 	cardElement,
 							// 	noteInstance,
@@ -259,6 +265,7 @@ export default class TaskCardRenderer {
 								noteInstance,
 								controller
 							);
+							// prevent checkbox click from expanding the card
 							if (event.target.closest('.taskCheckbox')) {
 								return;
 							}

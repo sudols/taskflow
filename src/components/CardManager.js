@@ -190,12 +190,6 @@ export default class CardManager {
 	static transitionToDisplayMode(cardElement, noteInstance) {
 		if (!cardElement || !noteInstance) return;
 
-		// Cleanup current card
-		if (cardElement._abortController) {
-			cardElement._abortController.abort();
-			delete cardElement._abortController;
-		}
-
 		// Create new display card
 		const displayCardHTML = this.createDisplayCard(noteInstance);
 		if (displayCardHTML) {
