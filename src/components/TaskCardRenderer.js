@@ -138,6 +138,16 @@ export default class TaskCardRenderer {
 		);
 	}
 
+	static handleCheckboxToggle(cardElement, noteInstance, controller, event) {
+		if (event.target.closest('#taskCheckbox')) {
+			return CardEventManager.handleCheckboxToggle(
+				cardElement,
+				noteInstance,
+				controller
+			);
+		}
+	}
+
 	/**
 	 * Expand a card to show all fields
 	 */
@@ -218,11 +228,19 @@ export default class TaskCardRenderer {
 								controller,
 								event
 							);
+
+							TaskCardRenderer.handleCheckboxToggle(
+								cardElement,
+								noteInstance,
+								controller,
+								event
+							);
 							// TaskCardRenderer.attachThreeDotMenuListeners(
 							// 	cardElement,
 							// 	noteInstance,
 							// 	controller
 							// );
+
 							TaskCardRenderer.attachDestroyListeners(
 								cardElement,
 								noteInstance,

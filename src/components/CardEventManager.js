@@ -206,6 +206,15 @@ export default class CardEventManager {
 		});
 	}
 
+	static handleCheckboxToggle(cardElement, noteInstance, controller) {
+		if (!cardElement) return;
+		const checkbox = cardElement.querySelector('#taskCheckbox');
+		if (checkbox) {
+			// console.log(checkbox);
+			noteInstance.toggle();
+		}
+	}
+
 	// Private helper methods
 	static _getCalendarElements(cardElement) {
 		return {

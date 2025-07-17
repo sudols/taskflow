@@ -13,6 +13,7 @@ export default class CardTemplateManager {
 						<input
 							type="checkbox"
 							class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition"
+							id="newTaskCheckbox"
 						/>
 						<span class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition">
 							<i class="ti ti-check"></i>
@@ -67,6 +68,8 @@ export default class CardTemplateManager {
 						<input
 							type="checkbox"
 							class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition"
+							id="taskCheckbox"
+							${noteInstance.completed ? 'checked' : ''}
 						/>
 						<span class="absolute text-checkbox-icon opacity-0 peer-checked:opacity-100 transition">
 							<i class="ti ti-check"></i>
