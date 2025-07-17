@@ -47,7 +47,6 @@ export default class Note {
 		this.completed = !this.completed;
 		this.modified = new Date().toISOString();
 		localStorage.setItem(this.id, JSON.stringify(this));
-		// console.log('Note complete toggled:', this);
 	}
 
 	static create(noteInstance, categoryName = 'default') {

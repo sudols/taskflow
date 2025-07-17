@@ -64,7 +64,7 @@ export default class CardTemplateManager {
 				noteInstance.id
 			}">
 				<div>
-					<label class="flex items-center justify-center cursor-pointer relative">
+					<label class="flex items-center justify-center cursor-pointer relative taskCheckbox">
 						<input
 							type="checkbox"
 							class="peer h-5 w-5 cursor-pointer appearance-none rounded border bg-sort-btn-bg border-checkbox-border checked:bg-checkbox-checked checked:border-0 transition"

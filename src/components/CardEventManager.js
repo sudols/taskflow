@@ -212,6 +212,7 @@ export default class CardEventManager {
 		if (checkbox) {
 			// console.log(checkbox);
 			noteInstance.toggle();
+			return;
 		}
 	}
 

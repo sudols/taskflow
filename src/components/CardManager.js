@@ -161,10 +161,6 @@ export default class CardManager {
 	static expandCard(cardElement) {
 		if (!cardElement) return;
 
-		if (cardElement.querySelector('#taskCheckbox').checked) {
-			return;
-		}
-
 		const titleContainer = cardElement.querySelector('.titleContainer');
 		const descriptionContainer = cardElement.querySelector(
 			'.descriptionContainer'

@@ -140,19 +140,20 @@ export default class TaskCardRenderer {
 
 	static handleCheckboxToggle(cardElement, noteInstance, controller, event) {
 		if (event.target.closest('#taskCheckbox')) {
-			return CardEventManager.handleCheckboxToggle(
+			CardEventManager.handleCheckboxToggle(
 				cardElement,
 				noteInstance,
 				controller
 			);
+			return true;
 		}
 	}
 
 	/**
 	 * Expand a card to show all fields
 	 */
-	static expandCard(cardElement, noteInstance, controller) {
-		return CardManager.expandCard(cardElement);
+	static expandCard(cardElement, noteInstance, controller, event) {
+		return CardManager.expandCard(cardElement, event);
 	}
 
 	/**
@@ -162,6 +163,17 @@ export default class TaskCardRenderer {
 		document.addEventListener(
 			'click',
 			(event) => {
+				// if (event.target.closest('#taskCheckbox')) {
+				// 	console.log('yes');
+
+				// 	const cardElement = event.target.closest('.taskCard');
+				// 	const noteId = cardElement.dataset.noteId;
+				// 	const noteInstance = Note.get(noteId);
+				// 	const controller = null;
+				// 	event.stopPropagation();
+				// 	return;
+				// }
+
 				// Handle new task button clicks
 				if (event.target.classList.contains('newTaskButton')) {
 					const result = TaskCardRenderer.createNewCardTemplate();
@@ -198,7 +210,10 @@ export default class TaskCardRenderer {
 				}
 
 				// Handle existing task card clicks
-				if (event.target.closest('.taskCard')) {
+				if (
+					event.target.closest('.taskCard') &&
+					!event.target.closest('#taskCheckbox')
+				) {
 					const cardElement = event.target.closest('.taskCard');
 					const noteId = cardElement.dataset.noteId;
 
@@ -215,7 +230,13 @@ export default class TaskCardRenderer {
 					if (noteId) {
 						const noteInstance = Note.get(noteId);
 						if (noteInstance) {
-							// Attach event listeners for editing mode
+							TaskCardRenderer.handleCheckboxToggle(
+								cardElement,
+								noteInstance,
+								controller,
+								event
+							);
+
 							TaskCardRenderer.handleInputClick(
 								cardElement,
 								noteInstance,
@@ -229,12 +250,6 @@ export default class TaskCardRenderer {
 								event
 							);
 
-							TaskCardRenderer.handleCheckboxToggle(
-								cardElement,
-								noteInstance,
-								controller,
-								event
-							);
 							// TaskCardRenderer.attachThreeDotMenuListeners(
 							// 	cardElement,
 							// 	noteInstance,
@@ -246,10 +261,14 @@ export default class TaskCardRenderer {
 								noteInstance,
 								controller
 							);
+							if (event.target.closest('.taskCheckbox')) {
+								return;
+							}
 							TaskCardRenderer.expandCard(
 								cardElement,
 								noteInstance,
-								controller
+								controller,
+								event
 							);
 						}
 					}
