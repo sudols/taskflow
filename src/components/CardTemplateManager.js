@@ -60,7 +60,7 @@ export default class CardTemplateManager {
 	 */
 	static createDisplayCardTemplate(noteInstance) {
 		return `
-			<div class="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition" data-note-id="${
+			<div class="flex items-center gap-4  bg-task-card-bg   p-4 rounded-lg taskCard transition" data-note-id="${
 				noteInstance.id
 			}">
 				<div>
@@ -86,7 +86,10 @@ export default class CardTemplateManager {
 							id="newTaskTitle"
 							placeholder="Title"
 							value="${noteInstance.title || ''}"
-							class="outline-none text-heading text-lg font-semibold w-full"
+							// TODO: Implement edit mode
+							class="outline-none text-heading text-lg font-semibold w-full ${
+								noteInstance.completed ? 'line-through' : ''
+							}"
 						/>
 						<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
 							<i class="ti ti-dots-vertical"></i>

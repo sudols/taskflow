@@ -10,7 +10,7 @@ export default class CardManager {
 	 * Create a new editable card and insert it into the container
 	 */
 	static createNewCard() {
-		const container = document.querySelector('.cardDisplayContainer');
+		const container = document.querySelector('.incompleteCardDisplayContainer');
 		if (!container) {
 			console.error('Card display container not found');
 			return null;
@@ -65,7 +65,7 @@ export default class CardManager {
 	 * Create a display card from a note instance
 	 */
 	static createDisplayCard(noteInstance) {
-		const container = document.querySelector('.cardDisplayContainer');
+		const container = document.querySelector('.incompleteCardDisplayContainer');
 		if (!container) {
 			console.error('Card display container not found');
 			return null;
@@ -79,15 +79,22 @@ export default class CardManager {
 	 */
 	static renderCards(categoryName) {
 		const notes = Category.getNotes(categoryName);
-		const container = document.querySelector('.cardDisplayContainer');
+		// const container = document.querySelector('.cardDisplayContainer');
+		const incompleteTasksContainer = document.querySelector(
+			'.incompleteCardDisplayContainer'
+		);
+		const completedTasksContainer = document.querySelector(
+			'.completedCardDisplayContainer'
+		);
 
-		if (!container) {
+		if (!incompleteTasksContainer || !completedTasksContainer) {
 			console.error('Card display container not found');
 			return;
 		}
 
 		// Clear existing cards
-		container.innerHTML = '';
+		completedTasksContainer.innerHTML = '';
+		incompleteTasksContainer.innerHTML = '';
 
 		// Render each note
 		notes.forEach((noteId) => {
@@ -97,7 +104,11 @@ export default class CardManager {
 			if (noteData) {
 				const cardHTML = this.createDisplayCard(noteData);
 				if (cardHTML) {
-					container.insertAdjacentHTML('afterbegin', cardHTML);
+					if (noteData.completed) {
+						completedTasksContainer.insertAdjacentHTML('afterbegin', cardHTML);
+					} else {
+						incompleteTasksContainer.insertAdjacentHTML('afterbegin', cardHTML);
+					}
 				}
 			}
 		});
@@ -185,12 +196,11 @@ export default class CardManager {
 
 	/**
 	 * Transition a card from edit mode to display mode
-	 * TODO: Implement actual transition logic instead of creating a new card
+	 * ?TODO: Implement actual transition logic instead of creating a new card
 	 */
 	static transitionToDisplayMode(cardElement, noteInstance) {
 		if (!cardElement || !noteInstance) return;
 
-		// Create new display card
 		const displayCardHTML = this.createDisplayCard(noteInstance);
 		if (displayCardHTML) {
 			cardElement.replaceWith(

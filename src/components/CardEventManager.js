@@ -215,6 +215,11 @@ export default class CardEventManager {
 		}
 	}
 
+	// static renderCompletedCard(cardElement, noteData) {
+	// 	if (!cardElement) return;
+	// 	const container = document.querySelector('.cardDisplayContainer');
+	// }
+
 	// Private helper methods
 	static _getCalendarElements(cardElement) {
 		return {
