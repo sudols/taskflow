@@ -21,6 +21,10 @@ export default class TaskCardRenderer {
 	 */
 	static handleCalendarClick(cardElement, noteInstance, controller, event) {
 		if (event.target.closest('.calendarButton')) {
+			// if (cardElement._calendarListenersAttached) {
+			// 	return;
+			// }
+			// cardElement._calendarListenersAttached = true;
 			return CardEventManager.handleCalendarClick(
 				cardElement,
 				noteInstance,
@@ -38,6 +42,10 @@ export default class TaskCardRenderer {
 			event.target.closest('#newTaskTitle') ||
 			event.target.closest('#newTaskDescription')
 		) {
+			if (cardElement._inputListenersAttached) {
+				return;
+			}
+			cardElement._inputListenersAttached = true;
 			return CardEventManager.attachInputListeners(
 				cardElement,
 				noteInstance,
