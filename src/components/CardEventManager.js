@@ -166,7 +166,7 @@ export default class CardEventManager {
 
 	/**
 	 * Attach listeners for transitioning cards to display mode
-	 * TODO: Implement actual transition logic instead of creating a new card
+	 * ?TODO: Implement actual transition logic instead of creating a new card
 	 */
 	static attachCardTransitionListeners(cardElement, noteInstance, controller) {
 		const completedTasksContainer = document.querySelector(
@@ -177,6 +177,8 @@ export default class CardEventManager {
 		);
 
 		function transitionToDisplayMode(event) {
+			console.log(Note.get(noteInstance.id));
+
 			if (!cardElement.contains(event.target) && Note.get(noteInstance.id)) {
 				cardElement.remove();
 				if (cardElement._abortController) {
@@ -202,6 +204,12 @@ export default class CardEventManager {
 		document.addEventListener('click', transitionToDisplayMode, {
 			signal: controller.signal,
 		});
+		const container = document.querySelector('.cardDisplayContainer');
+
+		if (!container) {
+			console.error('task container for rendering not found');
+			return;
+		}
 
 		// Cleanup observer
 		const observer = new MutationObserver(() => {

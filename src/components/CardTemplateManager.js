@@ -28,7 +28,7 @@ export default class CardTemplateManager {
 								name="newTaskTitle"
 								id="newTaskTitle"
 								placeholder="Title"
-								class="outline-none text-heading text-lg font-semibold w-full"
+								class="outline-none text-heading text-lg font-semibold w-full newTaskTitle"
 							/>
 							<button type="button" class="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition">
 								<i class="ti ti-dots-vertical"></i>
@@ -38,7 +38,7 @@ export default class CardTemplateManager {
 							type="text"
 							name="newTaskDescription"
 							id="newTaskDescription"
-							class="outline-none text-body text-sm line-clamp-2"
+							class="outline-none text-body text-sm line-clamp-2 newTaskDescription"
 							placeholder="details"
 						/>
 					</div>

@@ -170,17 +170,6 @@ export default class TaskCardRenderer {
 		document.addEventListener(
 			'click',
 			(event) => {
-				// if (event.target.closest('#taskCheckbox')) {
-				// 	console.log('yes');
-
-				// 	const cardElement = event.target.closest('.taskCard');
-				// 	const noteId = cardElement.dataset.noteId;
-				// 	const noteInstance = Note.get(noteId);
-				// 	const controller = null;
-				// 	event.stopPropagation();
-				// 	return;
-				// }
-
 				// Handle new task button clicks
 				if (event.target.classList.contains('newTaskButton')) {
 					const result = TaskCardRenderer.createNewCardTemplate();
@@ -188,17 +177,28 @@ export default class TaskCardRenderer {
 
 					const { cardElement, noteInstance, controller } = result;
 
+					document.addEventListener(
+						'click',
+						(event) => {
+							TaskCardRenderer.handleInputClick(
+								cardElement,
+								noteInstance,
+								controller,
+								event
+							);
+
+							TaskCardRenderer.handleCalendarClick(
+								cardElement,
+								noteInstance,
+								controller,
+								event
+							);
+						},
+						{
+							signal: controller.signal,
+						}
+					);
 					// Attach all necessary event listeners
-					TaskCardRenderer.handleInputClick(
-						cardElement,
-						noteInstance,
-						controller
-					);
-					TaskCardRenderer.handleCalendarClick(
-						cardElement,
-						noteInstance,
-						controller
-					);
 					TaskCardRenderer.attachRemoveNewCardTemplate(
 						cardElement,
 						noteInstance,
