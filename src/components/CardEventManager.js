@@ -169,7 +169,12 @@ export default class CardEventManager {
 	 * TODO: Implement actual transition logic instead of creating a new card
 	 */
 	static attachCardTransitionListeners(cardElement, noteInstance, controller) {
-		const container = document.querySelector('.cardDisplayContainer');
+		const completedTasksContainer = document.querySelector(
+			'.completedCardDisplayContainer'
+		);
+		const incompleteTasksContainer = document.querySelector(
+			'.incompleteCardDisplayContainer'
+		);
 
 		function transitionToDisplayMode(event) {
 			if (!cardElement.contains(event.target) && Note.get(noteInstance.id)) {
@@ -182,8 +187,14 @@ export default class CardEventManager {
 
 				const card =
 					CardTemplateManager.createDisplayCardTemplate(noteInstance);
-				if (container && card) {
-					container.insertAdjacentHTML('afterbegin', card);
+				if (completedTasksContainer && incompleteTasksContainer && card) {
+					console.log('noteInstance.completed:', noteInstance.completed);
+
+					if (noteInstance.completed) {
+						completedTasksContainer.insertAdjacentHTML('afterbegin', card);
+					} else {
+						incompleteTasksContainer.insertAdjacentHTML('afterbegin', card);
+					}
 				}
 			}
 		}
@@ -211,7 +222,7 @@ export default class CardEventManager {
 		const checkbox = cardElement.querySelector('#taskCheckbox');
 		if (checkbox) {
 			noteInstance.toggle();
-			return;
+			return true;
 		}
 	}
 

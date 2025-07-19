@@ -209,6 +209,39 @@ export default class CardManager {
 		}
 	}
 
+	static moveToCompletionContainer(cardElement, noteInstance, controller) {
+		if (!cardElement || !noteInstance) return;
+		const completedTasksContainer = document.querySelector(
+			'.completedCardDisplayContainer'
+		);
+		const incompleteTasksContainer = document.querySelector(
+			'.incompleteCardDisplayContainer'
+		);
+		if (!completedTasksContainer || !incompleteTasksContainer) {
+			console.error('Card display container not found');
+			return;
+		}
+		const displayCardHTML = this.createDisplayCard(noteInstance);
+
+		if (!displayCardHTML) {
+			console.log('Failed to create display card HTML');
+			return;
+		}
+
+		if (noteInstance.completed) {
+			// Move to completed container
+			cardElement.remove();
+			completedTasksContainer.insertAdjacentHTML('afterbegin', displayCardHTML);
+		} else {
+			// Move to incomplete container
+			cardElement.remove();
+			incompleteTasksContainer.insertAdjacentHTML(
+				'afterbegin',
+				displayCardHTML
+			);
+		}
+	}
+
 	// Private helper methods
 	static _updateCardVisibility(cardElement, noteData) {
 		const titleContainer = cardElement.querySelector('.titleContainer');

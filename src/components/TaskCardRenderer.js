@@ -135,9 +135,8 @@ export default class TaskCardRenderer {
 						cardElement._abortController.abort();
 						delete cardElement._abortController;
 					}
-
-					CardManager.transitionToDisplayMode(cardElement, noteInstance);
 				}
+				CardManager.transitionToDisplayMode(cardElement, noteInstance);
 			},
 			{ signal: controller.signal }
 		);
@@ -150,6 +149,14 @@ export default class TaskCardRenderer {
 			controller
 		);
 		return true;
+	}
+
+	static moveToCompletionContainer(cardElement, noteInstance, controller) {
+		CardManager.moveToCompletionContainer(
+			cardElement,
+			noteInstance,
+			controller
+		);
 	}
 
 	/**
@@ -233,12 +240,20 @@ export default class TaskCardRenderer {
 					if (noteId) {
 						const noteInstance = Note.get(noteId);
 						if (noteInstance) {
-							TaskCardRenderer.handleCheckboxToggle(
-								cardElement,
-								noteInstance,
-								controller,
-								event
-							);
+							if (event.target.closest('.taskCheckbox')) {
+								TaskCardRenderer.handleCheckboxToggle(
+									cardElement,
+									noteInstance,
+									controller,
+									event
+								);
+								TaskCardRenderer.moveToCompletionContainer(
+									cardElement,
+									noteInstance,
+									controller
+								);
+								return;
+							}
 
 							TaskCardRenderer.handleInputClick(
 								cardElement,
@@ -302,6 +317,7 @@ export default class TaskCardRenderer {
 
 // Initialize the system
 
+// TODO: move to main.js
 // Expose DevUtils for development/debugging
 if (typeof window !== 'undefined') {
 	window.DevUtils = DevUtils;
