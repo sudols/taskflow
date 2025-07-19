@@ -1,9 +1,6 @@
 import Note from '../models/Note.js';
 import CardManager from './CardManager.js';
 import CardEventManager from './CardEventManager.js';
-
-// utility for random notes generation
-import DevUtils from '../utils/devUtils.js';
 import Category from '../models/Category.js';
 
 /**
@@ -313,18 +310,4 @@ export default class TaskCardRenderer {
 		this.globalController = new AbortController();
 		this.initializeEventListeners();
 	}
-}
-
-// Initialize the system
-
-// TODO: move to main.js
-// Expose DevUtils for development/debugging
-if (typeof window !== 'undefined') {
-	window.DevUtils = DevUtils;
-
-	// New primary functions
-	window.getCategories = () => DevUtils.getCategories();
-	window.deleteAllCategories = () => DevUtils.deleteAllCategories();
-	window.generateRandomTasks = (categoryName, count) =>
-		DevUtils.generateRandomTasks(categoryName, count);
 }
