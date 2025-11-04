@@ -13,7 +13,15 @@ module.exports = {
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 	devtool: 'inline-source-map',
 	devServer: {
-		static: '../dist',
+		static: [
+			{
+				directory: path.resolve(__dirname, '../dist'),
+			},
+			{
+				directory: path.resolve(__dirname, '../src/pages'),
+				publicPath: '/pages',
+			},
+		],
 		server: 'https',
 		host: 'localhost',
 		port: 8080,
@@ -50,6 +58,10 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, '../index.html'),
 			filename: 'index.html',
+		}),
+		new HtmlWebpackPlugin({
+			template: path.resolve(__dirname, '../src/pages/about.html'),
+			filename: 'pages/about.html',
 		}),
 		new CopyWebpackPlugin({
 			patterns: [
