@@ -1,15 +1,18 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import '@tabler/icons-webfont/dist/tabler-icons.css';
 import 'flatpickr/dist/flatpickr.min.css';
-import { TaskCardRenderer } from './components/TaskCardRenderer.js';
 import './style.css';
-import Sidebar from './components/SideBar.js';
+import App from './App';
 import DevUtils from './utils/devUtils.js';
 
-if (module.hot) {
-	module.hot.accept();
-}
-
-Sidebar.init();
+// Create root and render the app
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>
+);
 
 // Expose DevUtils for development/debugging
 if (typeof window !== 'undefined') {
