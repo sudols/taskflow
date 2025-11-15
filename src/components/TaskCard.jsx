@@ -3,13 +3,15 @@ import { useTaskContext } from '../context/TaskContext';
 import flatpickr from 'flatpickr';
 
 const TaskCard = ({ task }) => {
-	const { updateTask, toggleTask } = useTaskContext();
+	const { updateTask, toggleTask, deleteTask } = useTaskContext();
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [showMenu, setShowMenu] = useState(false);
 	const dateButtonRef = useRef(null);
 	const flatpickrRef = useRef(null);
 	const titleInputRef = useRef(null);
 	const descriptionInputRef = useRef(null);
 	const cardRef = useRef(null);
+	const menuRef = useRef(null);
 
 	useEffect(() => {
 		// Initialize flatpickr on the date button
@@ -37,6 +39,7 @@ const TaskCard = ({ task }) => {
 		const handleClickOutside = (event) => {
 			if (cardRef.current && !cardRef.current.contains(event.target)) {
 				setIsExpanded(false);
+				setShowMenu(false); // Close menu when clicking outside
 			}
 		};
 
@@ -49,12 +52,20 @@ const TaskCard = ({ task }) => {
 		};
 	}, [isExpanded]);
 
+	// Close menu when card is no longer expanded
+	useEffect(() => {
+		if (!isExpanded) {
+			setShowMenu(false);
+		}
+	}, [isExpanded]);
+
 	const handleCardClick = (e) => {
 		// Don't expand if clicking checkbox
 		if (e.target.closest('.taskCheckbox')) {
 			return;
 		}
 		setIsExpanded(true);
+		setShowMenu(false); // Close menu when card is clicked to expand
 	};
 
 	const handleCheckboxToggle = () => {
@@ -69,12 +80,33 @@ const TaskCard = ({ task }) => {
 		updateTask(task.id, { description: e.target.value });
 	};
 
+	const handleDeleteTask = (e) => {
+		e.stopPropagation();
+		if (confirm('Delete this task?')) {
+			deleteTask(task.id);
+		}
+		setShowMenu(false);
+	};
+
+	const toggleMenu = (e) => {
+		e.stopPropagation();
+		setShowMenu(!showMenu);
+	};
+
+	const handleMouseEnter = () => {
+		// Close menu when re-hovering the card
+		if (!isExpanded) {
+			setShowMenu(false);
+		}
+	};
+
 	return (
 		<div
 			ref={cardRef}
-			className="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition"
+			className="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition relative group"
 			data-note-id={task.id}
 			onClick={handleCardClick}
+			onMouseEnter={handleMouseEnter}
 		>
 			<div>
 				<label className="flex items-center justify-center cursor-pointer relative taskCheckbox">
@@ -108,12 +140,6 @@ const TaskCard = ({ task }) => {
 							task.completed ? 'line-through' : ''
 						}`}
 					/>
-					<button
-						type="button"
-						className="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition"
-					>
-						<i className="ti ti-dots-vertical"></i>
-					</button>
 				</div>
 				<div
 					className={`descriptionContainer ${
@@ -150,6 +176,33 @@ const TaskCard = ({ task }) => {
 						</button>
 					</p>
 				</div>
+			</div>
+			{/* Three-dot menu in top-right corner */}
+			<div
+				className={`absolute top-2 right-2 ${
+					isExpanded ? 'block' : 'opacity-0 group-hover:opacity-100'
+				} transition-opacity`}
+			>
+				<button
+					type="button"
+					onClick={toggleMenu}
+					className="cursor-pointer hover:bg-generic-btn-hover rounded p-1 transition"
+				>
+					<i className="ti ti-dots-vertical"></i>
+				</button>
+				{showMenu && (
+					<div
+						ref={menuRef}
+						className="absolute right-0 mt-1 w-32 bg-task-card-bg border border-divider rounded-md shadow-lg z-50"
+					>
+						<button
+							onClick={handleDeleteTask}
+							className="w-full text-left px-4 py-2 text-sm text-body hover:bg-sort-btn-bg transition rounded-md"
+						>
+							Delete
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

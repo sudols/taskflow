@@ -102,12 +102,6 @@ const NewTaskCard = ({ onCancel }) => {
 							className="outline-none text-heading text-lg font-semibold w-full newTaskTitle"
 							autoFocus
 						/>
-						<button
-							type="button"
-							className="cursor-pointer hover:bg-generic-btn-hover hover:rounded hidden threeDotMenu transition"
-						>
-							<i className="ti ti-dots-vertical"></i>
-						</button>
 					</div>
 					<input
 						type="text"
