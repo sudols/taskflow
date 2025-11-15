@@ -2,15 +2,36 @@ import React, { useState } from 'react';
 import { useTaskContext } from '../context/TaskContext';
 import TaskCard from './TaskCard';
 import NewTaskCard from './NewTaskCard';
+import SortDropdown from './SortDropdown';
 
 const MainContent = ({ sidebarVisible }) => {
 	const { tasks, searchQuery, setSearchQuery, getFilteredTasks } =
 		useTaskContext();
 	const [isCreatingTask, setIsCreatingTask] = useState(false);
+	const [sortBy, setSortBy] = useState('creation');
 
-	const filteredTasks = getFilteredTasks();
-	const incompleteTasks = filteredTasks.filter((task) => !task.completed);
-	const completedTasks = filteredTasks.filter((task) => task.completed);
+	const getSortedTasks = () => {
+		const filtered = getFilteredTasks();
+		let sorted = [...filtered];
+
+		if (sortBy === 'creation') {
+			sorted.sort((a, b) => new Date(b.created) - new Date(a.created));
+		} else if (sortBy === 'completion') {
+			sorted.sort((a, b) => a.completed - b.completed);
+		} else if (sortBy === 'dueDate') {
+			sorted.sort((a, b) => {
+				if (!a.dueDate) return 1;
+				if (!b.dueDate) return -1;
+				return new Date(a.dueDate) - new Date(b.dueDate);
+			});
+		}
+
+		return sorted;
+	};
+
+	const sortedTasks = getSortedTasks();
+	const incompleteTasks = sortedTasks.filter((task) => !task.completed);
+	const completedTasks = sortedTasks.filter((task) => task.completed);
 
 	const handleNewTask = () => {
 		setIsCreatingTask(true);
@@ -60,12 +81,7 @@ const MainContent = ({ sidebarVisible }) => {
 				>
 					New Task
 				</button>
-				<button
-					type="button"
-					className="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-3 pl-3 rounded-md text-btn-text font-bold text-sm sortTaskButton"
-				>
-					Sort & Filter
-				</button>
+				<SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
 			</div>
 
 			{/* Task Cards Container */}
