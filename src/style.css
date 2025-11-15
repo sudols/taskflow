@@ -219,7 +219,10 @@
 	color: #374151 !important;
 }
 
-:root:not(.dark) .flatpickr-day:hover:not(.flatpickr-disabled):not(.nextMonthDay):not(.prevMonthDay) {
+:root:not(.dark)
+	.flatpickr-day:hover:not(.flatpickr-disabled):not(.nextMonthDay):not(
+		.prevMonthDay
+	) {
 	background: #f3f4f6 !important;
 	color: #111827 !important;
 }
@@ -280,4 +283,22 @@
 
 :root:not(.dark) .flatpickr-time .flatpickr-time-separator {
 	color: #6b7280 !important;
+}
+
+/* Task card animations */
+
+@keyframes expandCard {
+	from {
+		max-height: 60px;
+		opacity: 0.8;
+	}
+	to {
+		max-height: 500px;
+		opacity: 1;
+	}
+}
+
+.taskCard.expanded,
+.newCardContainer {
+	animation: expandCard 1.5s ease-out;
 }

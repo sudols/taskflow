@@ -103,7 +103,9 @@ const TaskCard = ({ task }) => {
 	return (
 		<div
 			ref={cardRef}
-			className="flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition relative group"
+			className={`flex items-center gap-4 bg-task-card-bg p-4 rounded-lg taskCard transition-all relative group ${
+				isExpanded ? 'expanded' : ''
+			}`}
 			data-note-id={task.id}
 			onClick={handleCardClick}
 			onMouseEnter={handleMouseEnter}
@@ -125,7 +127,7 @@ const TaskCard = ({ task }) => {
 			<div className="w-full flex flex-col gap-2">
 				<div
 					className={`flex items-center justify-between titleContainer ${
-						task.title || isExpanded ? 'visible' : 'hidden'
+						task.title || isExpanded ? 'visible animate-in' : 'hidden'
 					}`}
 				>
 					<input
@@ -143,7 +145,7 @@ const TaskCard = ({ task }) => {
 				</div>
 				<div
 					className={`descriptionContainer ${
-						task.description || isExpanded ? 'visible' : 'hidden'
+						task.description || isExpanded ? 'visible animate-in' : 'hidden'
 					} flex flex-col w-full`}
 				>
 					<input
@@ -159,7 +161,7 @@ const TaskCard = ({ task }) => {
 				</div>
 				<div
 					className={`dueDateParentContainer ${
-						task.dueDate !== '' || isExpanded ? 'visible' : 'hidden'
+						task.dueDate !== '' || isExpanded ? 'visible animate-in' : 'hidden'
 					}`}
 				>
 					<p className="text-body text-xs flex items-center gap-2 dueDateContainer">
