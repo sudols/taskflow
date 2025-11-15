@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTaskContext } from '../context/TaskContext';
+import ThemeToggle from './ThemeToggle';
 
 const Sidebar = ({ visible, onToggle }) => {
 	const {
@@ -141,7 +142,8 @@ const Sidebar = ({ visible, onToggle }) => {
 				</ul>
 			</div>
 
-			<div className="AboutPage mt-auto w-full flex flex-col mb-5">
+			<div className="AboutPage mt-auto w-full flex flex-col mb-5 gap-3">
+				<ThemeToggle />
 				<a href="/pages/about.html">
 					<p className="text-gray-500 text-s border-t border-gray-600 pt-3 hover:cursor-pointer hover:text-active-menu transition duration-200 text-center">
 						About Project

@@ -43,6 +43,41 @@
 	--color-tag-medium-bg: #fbbf241a; /* rgba(251, 191, 36, 0.1) */
 	--color-tag-medium-text: #fbbf24; /* rgb(251, 191, 36) */
 }
+
+/* Light mode overrides */
+:root:not(.dark) {
+	/* Backgrounds */
+	--color-main-bg: #f9fafb;
+	--color-sidebar-bg: #ffffff;
+	--color-divider: #e5e7eb;
+	--color-header-search-bg: #f3f4f6;
+	--color-task-card-bg: #ffffff;
+
+	/* Typography */
+	--color-logo: #1f2937;
+	--color-heading: #111827;
+	--color-body: #6b7280;
+	--color-active-menu: #111827;
+	--color-inactive-menu: #9ca3af;
+	--color-sort-btn-text: #374151;
+
+	/* Buttons */
+	--color-btn-bg: #2563eb;
+	--color-btn-text: #ffffff;
+	--color-btn-focus: #3b82f6;
+	--color-sort-btn-bg: #f3f4f6;
+	--color-generic-btn-hover: #f3f4f6;
+	--color-generic-btn-focus: #e5e7eb;
+	--color-generic-btn-focus-border: #d1d5db;
+
+	/* Checkbox */
+	--color-checkbox-border: #d1d5db;
+	--color-checkbox-checked: #2563eb;
+	--color-checkbox-icon: #ffffff;
+
+	/* Icons */
+	--color-icon: #9ca3af;
+}
 /* Custom Flatpickr theme to match your dark design */
 .flatpickr-calendar {
 	background: #1f2937 !important; /* var(--color-task-card-bg) */
@@ -141,4 +176,108 @@
 .flatpickr-prev-month:hover svg,
 .flatpickr-next-month:hover svg {
 	fill: #e2e8f0 !important;
+}
+
+/* Light mode - add borders to cards and sidebar */
+:root:not(.dark) .taskCard,
+:root:not(.dark) .newCardContainer {
+	border: 1px solid #e5e7eb;
+}
+
+:root:not(.dark) .sidebar {
+	border-right: 1px solid #e5e7eb;
+}
+
+/* Light mode - flatpickr styling */
+:root:not(.dark) .flatpickr-calendar {
+	background: #ffffff !important;
+	border: 1px solid #e5e7eb !important;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+:root:not(.dark) .flatpickr-months,
+:root:not(.dark) .flatpickr-month,
+:root:not(.dark) .flatpickr-weekdays {
+	background: #ffffff !important;
+}
+
+:root:not(.dark) .flatpickr-months {
+	border-bottom: 1px solid #e5e7eb !important;
+}
+
+:root:not(.dark) .flatpickr-weekdays {
+	border-bottom: 1px solid #e5e7eb !important;
+}
+
+:root:not(.dark) .flatpickr-weekday,
+:root:not(.dark) .flatpickr-current-month .flatpickr-monthDropdown-months,
+:root:not(.dark) .flatpickr-current-month input.cur-year {
+	color: #6b7280 !important;
+}
+
+:root:not(.dark) .flatpickr-day {
+	color: #374151 !important;
+}
+
+:root:not(.dark) .flatpickr-day:hover:not(.flatpickr-disabled):not(.nextMonthDay):not(.prevMonthDay) {
+	background: #f3f4f6 !important;
+	color: #111827 !important;
+}
+
+:root:not(.dark) .flatpickr-day.selected,
+:root:not(.dark) .flatpickr-day.selected:hover {
+	background: #2563eb !important;
+	color: #ffffff !important;
+	border-color: #2563eb !important;
+}
+
+:root:not(.dark) .flatpickr-day.today {
+	border-color: #3b82f6 !important;
+	color: #3b82f6 !important;
+}
+
+:root:not(.dark) .flatpickr-day.today:hover {
+	background: #3b82f6 !important;
+	color: #ffffff !important;
+}
+
+:root:not(.dark) .flatpickr-prev-month,
+:root:not(.dark) .flatpickr-next-month {
+	color: #6b7280 !important;
+}
+
+:root:not(.dark) .flatpickr-prev-month:hover,
+:root:not(.dark) .flatpickr-next-month:hover {
+	color: #111827 !important;
+}
+
+:root:not(.dark) .flatpickr-prev-month svg,
+:root:not(.dark) .flatpickr-next-month svg {
+	fill: #6b7280 !important;
+}
+
+:root:not(.dark) .flatpickr-prev-month:hover svg,
+:root:not(.dark) .flatpickr-next-month:hover svg {
+	fill: #111827 !important;
+}
+
+:root:not(.dark) .flatpickr-time {
+	border-top: 1px solid #e5e7eb !important;
+	background: #ffffff !important;
+}
+
+:root:not(.dark) .flatpickr-time input {
+	background: #f3f4f6 !important;
+	color: #111827 !important;
+	border: 1px solid #d1d5db !important;
+}
+
+:root:not(.dark) .flatpickr-time input:hover,
+:root:not(.dark) .flatpickr-time input:focus {
+	background: #e5e7eb !important;
+	border-color: #2563eb !important;
+}
+
+:root:not(.dark) .flatpickr-time .flatpickr-time-separator {
+	color: #6b7280 !important;
 }
