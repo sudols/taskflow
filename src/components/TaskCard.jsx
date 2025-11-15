@@ -82,9 +82,7 @@ const TaskCard = ({ task }) => {
 
 	const handleDeleteTask = (e) => {
 		e.stopPropagation();
-		if (confirm('Delete this task?')) {
-			deleteTask(task.id);
-		}
+		deleteTask(task.id);
 		setShowMenu(false);
 	};
 

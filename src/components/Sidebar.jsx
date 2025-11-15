@@ -45,10 +45,8 @@ const Sidebar = ({ visible, onToggle }) => {
 
 	const handleDeleteCategory = (categoryName, e) => {
 		e.stopPropagation();
-		if (confirm(`Delete category "${categoryName}"?`)) {
-			deleteCategory(categoryName);
-			setMenuOpenForCategory(null);
-		}
+		deleteCategory(categoryName);
+		setMenuOpenForCategory(null);
 	};
 
 	const toggleMenu = (categoryName, e) => {
