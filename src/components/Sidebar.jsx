@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { useTaskContext } from '../context/TaskContext';
 
 const Sidebar = ({ visible, onToggle }) => {
-	const { categories, selectedCategory, changeCategory, createCategory } =
-		useTaskContext();
+	const {
+		categories,
+		selectedCategory,
+		changeCategory,
+		createCategory,
+		deleteCategory,
+	} = useTaskContext();
 	const [isAddingCategory, setIsAddingCategory] = useState(false);
 	const [newCategoryName, setNewCategoryName] = useState('');
+	const [menuOpenForCategory, setMenuOpenForCategory] = useState(null);
 
 	const handleAddCategory = () => {
 		setIsAddingCategory(true);
@@ -34,6 +40,21 @@ const Sidebar = ({ visible, onToggle }) => {
 
 	const handleCategoryClick = (categoryName) => {
 		changeCategory(categoryName);
+	};
+
+	const handleDeleteCategory = (categoryName, e) => {
+		e.stopPropagation();
+		if (confirm(`Delete category "${categoryName}"?`)) {
+			deleteCategory(categoryName);
+			setMenuOpenForCategory(null);
+		}
+	};
+
+	const toggleMenu = (categoryName, e) => {
+		e.stopPropagation();
+		setMenuOpenForCategory(
+			menuOpenForCategory === categoryName ? null : categoryName
+		);
 	};
 
 	return (
@@ -91,12 +112,30 @@ const Sidebar = ({ visible, onToggle }) => {
 					{categories.map((category) => (
 						<li
 							key={category}
-							className={`hover:cursor-pointer hover:bg-generic-btn-hover categoryItem transition duration-200 rounded-md p-2 pl-4 ${
+							className={`hover:cursor-pointer hover:bg-generic-btn-hover categoryItem transition duration-200 rounded-md p-2 pl-4 relative group ${
 								selectedCategory === category ? 'bg-generic-btn-hover' : ''
 							}`}
 							onClick={() => handleCategoryClick(category)}
 						>
-							<span>{category}</span>
+							<div className="flex items-center justify-between">
+								<span>{category}</span>
+								<div className="relative">
+									<i
+										className="ti ti-dots-vertical opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-1 hover:bg-gray-600 rounded"
+										onClick={(e) => toggleMenu(category, e)}
+									></i>
+									{menuOpenForCategory === category && (
+										<div className="absolute right-0 mt-1 w-32 bg-task-card-bg border border-divider rounded-md shadow-lg z-50">
+											<button
+												onClick={(e) => handleDeleteCategory(category, e)}
+												className="w-full text-left px-4 py-2 text-sm text-body hover:bg-sort-btn-bg transition rounded-md"
+											>
+												Delete
+											</button>
+										</div>
+									)}
+								</div>
+							</div>
 						</li>
 					))}
 				</ul>

@@ -63,9 +63,19 @@ export const TaskProvider = ({ children }) => {
 
 	const deleteCategory = (categoryName) => {
 		Category.delete(categoryName);
-		loadCategories();
+		const updatedCategories = Category.getAll();
+		setCategories(updatedCategories);
+
 		if (selectedCategory === categoryName) {
-			setSelectedCategory('default');
+			// If deleting the current category, switch to the first available one
+			if (updatedCategories.length > 0) {
+				setSelectedCategory(updatedCategories[0]);
+			} else {
+				// No categories left, create and select "Notes"
+				Category.create('Notes');
+				setCategories(['Notes']);
+				setSelectedCategory('Notes');
+			}
 		}
 	};
 
