@@ -14,18 +14,31 @@ export const useTaskContext = () => {
 
 export const TaskProvider = ({ children }) => {
 	const [categories, setCategories] = useState([]);
-	const [selectedCategory, setSelectedCategory] = useState('default');
+	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [tasks, setTasks] = useState([]);
 	const [searchQuery, setSearchQuery] = useState('');
 
-	// Load categories on mount
+	// Load categories on mount and set default
 	useEffect(() => {
-		loadCategories();
+		const allCategories = Category.getAll();
+
+		if (allCategories.length === 0) {
+			// No categories exist, create "Notes" as default
+			Category.create('Notes');
+			setCategories(['Notes']);
+			setSelectedCategory('Notes');
+		} else {
+			// Categories exist, select the first one
+			setCategories(allCategories);
+			setSelectedCategory(allCategories[0]);
+		}
 	}, []);
 
 	// Load tasks when selected category changes
 	useEffect(() => {
-		loadTasks(selectedCategory);
+		if (selectedCategory) {
+			loadTasks(selectedCategory);
+		}
 	}, [selectedCategory]);
 
 	const loadCategories = () => {
@@ -92,7 +105,7 @@ export const TaskProvider = ({ children }) => {
 
 	const getFilteredTasks = () => {
 		if (!searchQuery) return tasks;
-		
+
 		const query = searchQuery.toLowerCase();
 		return tasks.filter(
 			(task) =>
