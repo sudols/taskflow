@@ -16,7 +16,6 @@ export const TaskProvider = ({ children }) => {
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [tasks, setTasks] = useState([]);
-	const [searchQuery, setSearchQuery] = useState('');
 
 	useEffect(() => {
 		const allCategories = Category.getAll();
@@ -112,23 +111,10 @@ export const TaskProvider = ({ children }) => {
 		setSelectedCategory(categoryName);
 	};
 
-	const getFilteredTasks = () => {
-		if (!searchQuery) return tasks;
-
-		const query = searchQuery.toLowerCase();
-		return tasks.filter(
-			(task) =>
-				task.title.toLowerCase().includes(query) ||
-				task.description.toLowerCase().includes(query)
-		);
-	};
-
 	const value = {
 		categories,
 		selectedCategory,
 		tasks,
-		searchQuery,
-		setSearchQuery,
 		loadCategories,
 		createCategory,
 		deleteCategory,
@@ -137,7 +123,6 @@ export const TaskProvider = ({ children }) => {
 		deleteTask,
 		toggleTask,
 		changeCategory,
-		getFilteredTasks,
 	};
 
 	return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

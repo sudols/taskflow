@@ -5,14 +5,12 @@ import NewTaskCard from './NewTaskCard';
 import SortDropdown from './SortDropdown';
 
 const MainContent = ({ sidebarVisible }) => {
-	const { tasks, searchQuery, setSearchQuery, getFilteredTasks } =
-		useTaskContext();
+	const { tasks } = useTaskContext();
 	const [isCreatingTask, setIsCreatingTask] = useState(false);
 	const [sortBy, setSortBy] = useState('creation');
 
 	const getSortedTasks = () => {
-		const filtered = getFilteredTasks();
-		let sorted = [...filtered];
+		let sorted = [...tasks];
 
 		if (sortBy === 'creation') {
 			sorted.sort((a, b) => new Date(b.created) - new Date(a.created));
@@ -47,7 +45,7 @@ const MainContent = ({ sidebarVisible }) => {
 				sidebarVisible ? 'ml-80' : 'ml-20'
 			}`}
 		>
-			{/* Search Bar */}
+			{/* Search Bar - Placeholder for future implementation */}
 			<div className="col-span-2">
 				<form action="#" onSubmit={(e) => e.preventDefault()}>
 					<div className="relative">
@@ -56,9 +54,8 @@ const MainContent = ({ sidebarVisible }) => {
 							name="card-search"
 							id="card-search"
 							className="appearance-none outline-none rounded-md bg-header-search-bg focus:text-active-menu text-inactive-menu pl-8 pt-2 pb-2 pr-20 text-sm border-gray-600 border"
-							placeholder="Search tasks"
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
+							placeholder="Search tasks (coming soon)"
+							disabled
 						/>
 						<div className="absolute left-2 top-0 flex items-center justify-center h-full text-base">
 							<i className="ti ti-search text-grey-200"></i>
