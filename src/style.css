@@ -302,3 +302,9 @@
 .newCardContainer {
 	animation: expandCard 1.5s ease-out;
 }
+
+/* force desktop only */
+html, body {
+	min-width: 1200px;
+	overflow-x: auto; 
+}
