@@ -18,7 +18,6 @@ export const TaskProvider = ({ children }) => {
 	const [tasks, setTasks] = useState([]);
 	const [searchQuery, setSearchQuery] = useState('');
 
-	// Load categories on mount and set default
 	useEffect(() => {
 		const allCategories = Category.getAll();
 

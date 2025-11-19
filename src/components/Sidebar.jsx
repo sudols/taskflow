@@ -142,7 +142,7 @@ const Sidebar = ({ visible, onToggle }) => {
 
 			<div className="AboutPage mt-auto w-full flex flex-col mb-5 gap-3">
 				<ThemeToggle />
-				<a href="/pages/about.html">
+				<a href="./pages/about.html">
 					<p className="text-gray-500 text-s border-t border-gray-600 pt-3 hover:cursor-pointer hover:text-active-menu transition duration-200 text-center">
 						About Project
 					</p>

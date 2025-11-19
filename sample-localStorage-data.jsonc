@@ -1,0 +1,76 @@
+{
+  "categories_index": {
+    "Home": [
+      "550e8400-e29b-41d4-a716-446655440001",
+      "550e8400-e29b-41d4-a716-446655440002",
+      "550e8400-e29b-41d4-a716-446655440003"
+    ],
+    "Project": [
+      "550e8400-e29b-41d4-a716-446655440004",
+      "550e8400-e29b-41d4-a716-446655440005",
+      "550e8400-e29b-41d4-a716-446655440006"
+    ]
+  },
+
+  // Notes
+  "550e8400-e29b-41d4-a716-446655440001": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Buy groceries",
+    "description": "",
+    "dueDate": "2025-11-20T10:00:00.000Z",
+    "priority": "medium",
+    "created": "2025-11-18T09:30:00.000Z",
+    "modified": "2025-11-18T09:30:00.000Z",
+    "completed": true
+  },
+  "550e8400-e29b-41d4-a716-446655440002": {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "title": "Clean the kitchen",
+    "description": "Deep clean counters, sink, and organize pantry",
+    "dueDate": "2025-11-19T15:00:00.000Z",
+    "priority": "normal",
+    "created": "2025-11-17T14:20:00.000Z",
+    "modified": "2025-11-17T14:20:00.000Z",
+    "completed": true
+  },
+  "550e8400-e29b-41d4-a716-446655440003": {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "title": "",
+    "description": "Pay electricity, water, and internet bills before the deadline",
+    "dueDate": "2025-11-21T23:59:00.000Z",
+    "priority": "high",
+    "created": "2025-11-16T11:00:00.000Z",
+    "modified": "2025-11-16T11:00:00.000Z",
+    "completed": false
+  },
+  "550e8400-e29b-41d4-a716-446655440004": {
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "title": "Complete project proposal",
+    "description": "Finish writing the Q4 project proposal and send to stakeholders",
+    "dueDate": "",
+    "priority": "high",
+    "created": "2025-11-15T08:00:00.000Z",
+    "modified": "2025-11-18T16:30:00.000Z",
+    "completed": false
+  },
+  "550e8400-e29b-41d4-a716-446655440005": {
+    "id": "550e8400-e29b-41d4-a716-446655440005",
+    "title": "Review code changes",
+    "description": "Review and merge pull requests for the new feature branch",
+    "dueDate": "2025-11-20T12:00:00.000Z",
+    "priority": "medium",
+    "created": "2025-11-18T10:15:00.000Z",
+    "modified": "2025-11-18T10:15:00.000Z",
+    "completed": false
+  },
+  "550e8400-e29b-41d4-a716-446655440006": {
+    "id": "550e8400-e29b-41d4-a716-446655440006",
+    "title": "Update documentation",
+    "description": "",
+    "dueDate": "",
+    "priority": "normal",
+    "created": "2025-11-17T13:45:00.000Z",
+    "modified": "2025-11-17T13:45:00.000Z",
+    "completed": false
+  }
+}

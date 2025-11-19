@@ -43,6 +43,8 @@ const SortDropdown = ({ sortBy, setSortBy }) => {
 				className="hover:cursor-pointer bg-sort-btn-bg pt-1.5 pb-1.5 pr-8 pl-3 rounded-md text-sort-btn-text font-bold text-sm hover:bg-gray-600 transition flex items-center gap-2"
 			>
 				{getSortLabel()}
+				
+				{/* Custom dropDown icon */}
 				<svg
 					className="w-4 h-4 ml-1"
 					fill="none"
@@ -62,7 +64,7 @@ const SortDropdown = ({ sortBy, setSortBy }) => {
 								: 'text-body'
 						}`}
 					>
-						Sort by Creation Date
+						Creation Date
 					</button>
 					<button
 						onClick={() => handleSortChange('completion')}
@@ -72,7 +74,7 @@ const SortDropdown = ({ sortBy, setSortBy }) => {
 								: 'text-body'
 						}`}
 					>
-						Sort by Completion Status
+						Completion Status
 					</button>
 					<button
 						onClick={() => handleSortChange('dueDate')}
@@ -82,7 +84,7 @@ const SortDropdown = ({ sortBy, setSortBy }) => {
 								: 'text-body'
 						}`}
 					>
-						Sort by Due Date
+						Due Date
 					</button>
 				</div>
 			)}

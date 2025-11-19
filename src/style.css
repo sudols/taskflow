@@ -78,9 +78,11 @@
 	/* Icons */
 	--color-icon: #9ca3af;
 }
-/* Custom Flatpickr theme to match your dark design */
+
+
+/* Custom Flatpickr theme to match toggle theme */
 .flatpickr-calendar {
-	background: #1f2937 !important; /* var(--color-task-card-bg) */
+	background: #1f2937 !important;
 	border: 1px solid #374151 !important; /* var(--color-divider) */
 	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
 	border-radius: 8px !important;
@@ -145,7 +147,6 @@
 	color: #e2e8f0 !important;
 }
 
-/* Time picker styling */
 .flatpickr-time {
 	border-top: 1px solid #374151 !important;
 	background: #1f2937 !important;
@@ -167,7 +168,6 @@
 	color: #9ca3af !important;
 }
 
-/* Custom arrow styling */
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
 	fill: #9ca3af !important;
@@ -178,7 +178,7 @@
 	fill: #e2e8f0 !important;
 }
 
-/* Light mode - add borders to cards and sidebar */
+/* Light mode */
 :root:not(.dark) .taskCard,
 :root:not(.dark) .newCardContainer {
 	border: 1px solid #e5e7eb;
@@ -188,7 +188,6 @@
 	border-right: 1px solid #e5e7eb;
 }
 
-/* Light mode - flatpickr styling */
 :root:not(.dark) .flatpickr-calendar {
 	background: #ffffff !important;
 	border: 1px solid #e5e7eb !important;
@@ -286,7 +285,6 @@
 }
 
 /* Task card animations */
-
 @keyframes expandCard {
 	from {
 		max-height: 60px;
@@ -303,7 +301,7 @@
 	animation: expandCard 1.5s ease-out;
 }
 
-/* force desktop only */
+/* Force desktop only on smaller screens */
 html, body {
 	min-width: 1200px;
 	overflow-x: auto; 

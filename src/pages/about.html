@@ -26,6 +26,18 @@
 			href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
 		/>
 		<title>About TaskFlow</title>
+		<script>
+			// Fixed bug of not applying from LocalStorage
+			(function() {
+				const savedTheme = localStorage.getItem('theme');
+				const prefersDark = savedTheme === 'dark' || !savedTheme;
+				if (prefersDark) {
+					document.documentElement.classList.add('dark');
+				} else {
+					document.documentElement.classList.remove('dark');
+				}
+			})();
+		</script>
 	</head>
 	<body class="bg-main-bg text-body min-h-screen p-8">
 		<div class="max-w-4xl mx-auto">
